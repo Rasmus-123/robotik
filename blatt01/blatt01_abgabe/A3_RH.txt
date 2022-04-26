@@ -29,8 +29,6 @@ Aufgabe 3
             Pose: (13.95cm, −1.13cm, -1/15)
 
 
-    b)  Da die Rotation angibt, in welche "Richtung" der Roboter fährt und die Translation nur wie weit dieser fährt, hat eine falsche Rotation einen größeren Einfluss auf die Position, der da Roboter somit für einige ganz in eine andere Richtung fahren könnte
-        Rotation wirkt sich stärker aus.
-		Ein Fehler von (x,y) bei der Translation kann auch nach weiteren korrekten Translationen und Rotationen einfach durch −(x,y) ausgeglichen werden. 
-		
-		Fehler bei der Rotation sorgen auch dafür, dass folgende Translationen in gänzlich andere Richtungen verlaufen, wodurch die Fehlerdistanz wächst.
+    b)  Da die Rotation angibt, in welche "Richtung" der Roboter fährt und die Translation nur wie weit dieser fährt, hat eine falsche Rotation einen größeren Einfluss auf die Position, der da Roboter somit für einige ganz in eine andere Richtung fahren könnte und somit die relative falsche Position immer größer wird
+
+		Ein Fehler von (x,y) bei der Translation ist ein konstanter Fehler, welcher sich durch spätere Transformation nicht weiter vergrößert.
