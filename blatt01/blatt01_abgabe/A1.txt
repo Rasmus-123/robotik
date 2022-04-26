@@ -1,0 +1,14 @@
+Aufgabe 1
+    a) Was ist eine Transformation?
+	- Verschieben(Translatieren), Skalieren, Rotieren, etc. von Objekten in einem (oder mehreren) Koordinatensystem.
+        - Dies ist z. B. dann sinnvoll, wenn man die Koordinaten eines Koordinatensystems in die eines anderen umwandeln möchte. Dafür rotiert und verschiebt man dann den gewünschten Vektor/Punkt. Das 'Objekt' bleibt dabei immer noch das gleiche, jedoch verändern sich die Koordianten bezogen auf ein anderes Bezugssystem
+
+    b) Welche Einträge der Matrix T sind Rotationskomponenten?
+		a. x-Achse: e,f,h,i
+		b. y-Achse: a,c,g,i
+		c. z-Achse: a,b,d,e
+
+
+    c)  Die Einträge c und f sind für die Translation verantwortlich
+
+    d)  Der Punkt muss um eine Dimension "erweitert" werden. In diesem Fall würde aus (x,y) dann (x,y,1) werden. Dies nennt man auch Homogenisierung.

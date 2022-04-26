@@ -1,0 +1,4 @@
+Aufgabe 5)
+
+    c)  Die Formel in der Vorlesung beziehen sich primär auf die Geschwindigkeit der einzelnen Roboterseiten, wohingegen die Formeln auf dem Blatt sich auf die zurückgelegte Strecke beziehen. Da s = v*t macht das zwar einen Unterschied, aber die Formel haben trotzdem eine ähnlich Struktur.
+        Zusätzlich beszieht die Vorlesung sich größtenteils auf ein linkshändiges Koordinatensystem und das Übungsblatt auf ein rechtshändiges Koordinatensystem.

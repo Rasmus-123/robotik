@@ -1,0 +1,32 @@
+Aufgabe 3
+
+    a)  b = 30cm
+        Angenommen rechtshändiges Koordinatensystem
+
+        1.  s_r = 6cm
+            s_l = 10cm
+
+            delta d = (10cm + 6cm) / 2 = 8cm
+            delta theta = (6cm - 10cm) / 30cm = -2/15
+
+            x = 8cm * cos(0 + (-2/15) * 0.5) = 7.98cm
+            y = 8cm * sin(0 + (-2/15) * 0.5) = −0.53cm
+            theta = -2/15
+
+            Pose: (7.98cm, −0.53cm, -2/15)
+
+        2.  delta s_r = 5cm
+            delta s_l = 7cm
+            start theta = -2/15
+
+            delta d = (5 + 7cm) / 2 = 6cm
+            theta = (7cm - 5cm) / 30cm = 1/15
+
+            x = 7.98cm + 6cm * cos((-2/15) + (1/15) * 0.5) = 13.95cm
+            y = −0.53cm + 6cm * sin((-2/15) + (1/15) * 0.5) = −1.13cm
+            theta = -2/15 + 1/15 = -1/15
+            
+            Pose: (13.95cm, −1.13cm, -1/15)
+
+
+    b)  Da die Rotation angibt, in welche "Richtung" der Roboter fährt und die Translation nur wie weit dieser fährt, hat eine falsche Rotation einen größeren Einfluss auf die Position, der da Roboter somit für einige ganz in eine andere Richtung fahren könnte
