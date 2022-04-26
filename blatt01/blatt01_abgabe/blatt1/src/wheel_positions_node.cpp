@@ -23,18 +23,14 @@ void rotationsCallback(const ceres_msgs::MotorRotationsConstPtr& msg)
 {
     ceres_msgs::WheelPositions toSend;
 
-    constexpr float wheelDiameter = 0.13f;                      // Raddurchmesser 0.13m
-    constexpr float pi = 3.14159265358979323846264338327950f;   // Pi
-
-    constexpr float wheelCircumference = wheelDiameter * pi;    // Umfang = pi * d
-
+    constexpr float wheelRadius = 0.13f;
     toSend.stamp = msg->stamp;
 
-    // Gefahrene Distanz (in m) = Umdrehungen * Reifenumfang
-    toSend.pos_front_left = msg->rot_front_left * wheelDiameter;
-    toSend.pos_front_right = msg->rot_front_right * wheelDiameter;
-    toSend.pos_rear_left = msg->rot_rear_left * wheelDiameter;
-    toSend.pos_rear_right = msg->rot_rear_right * wheelDiameter;
+    // (rot / 2pi) * 2pi * r = rot * r
+    toSend.pos_front_left = msg->rot_front_left * wheelRadius;
+    toSend.pos_front_right = msg->rot_front_right * wheelRadius;
+    toSend.pos_rear_left = msg->rot_rear_left * wheelRadius;
+    toSend.pos_rear_right = msg->rot_rear_right * wheelRadius;
 
     pub.publish(toSend);
 }
