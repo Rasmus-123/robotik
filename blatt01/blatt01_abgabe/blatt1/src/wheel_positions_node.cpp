@@ -31,10 +31,10 @@ void rotationsCallback(const ceres_msgs::MotorRotationsConstPtr& msg)
     toSend.stamp = msg->stamp;
 
     // Gefahrene Distanz (in m) = Umdrehungen * Reifenumfang
-    toSend.pos_front_left = msg->rot_front_left * wheelCircumference;
-    toSend.pos_front_right = msg->rot_front_right * wheelCircumference;
-    toSend.pos_rear_left = msg->rot_rear_left * wheelCircumference;
-    toSend.pos_rear_right = msg->rot_rear_right * wheelCircumference;
+    toSend.pos_front_left = msg->rot_front_left * wheelDiameter;
+    toSend.pos_front_right = msg->rot_front_right * wheelDiameter;
+    toSend.pos_rear_left = msg->rot_rear_left * wheelDiameter;
+    toSend.pos_rear_right = msg->rot_rear_right * wheelDiameter;
 
     pub.publish(toSend);
 }
