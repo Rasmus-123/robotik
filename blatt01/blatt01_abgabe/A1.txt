@@ -4,9 +4,7 @@ Aufgabe 1
         - Dies ist z. B. dann sinnvoll, wenn man die Koordinaten eines Koordinatensystems in die eines anderen umwandeln möchte. Dafür rotiert und verschiebt man dann den gewünschten Vektor/Punkt. Das 'Objekt' bleibt dabei immer noch das gleiche, jedoch verändern sich die Koordianten bezogen auf ein anderes Bezugssystem
 
     b) Welche Einträge der Matrix T sind Rotationskomponenten?
-		a. x-Achse: e,f,h,i
-		b. y-Achse: a,c,g,i
-		c. z-Achse: a,b,d,e
+		  Die Einträge a, b, d, e sind die für die Rotation verantwortlich
 
 
     c)  Die Einträge c und f sind für die Translation verantwortlich
