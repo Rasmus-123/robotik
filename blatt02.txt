@@ -1,4 +1,4 @@
 Aufgabe 1)
-    a)  Ist die IMU weit von dem Mittelpunkt des Roboters entfernt, so sorgt das dafür, dass eigentlich kleine Schwankungen wie leichtes wackeln des Roboters eine deutlich größere Auswirkung auf die IMU hätten, als wenn diese sich nahezu direkt am Mittelpunkt befindet
+    a)  Ist die IMU weit von dem Mittelpunkt des Roboters entfernt, so sorgt das dafür, dass eigentlich kleine Schwankungen wie leichtes wackeln des Roboters eine deutlich größere Auswirkung auf die IMU hätten, als wenn diese sich nahezu direkt am Mittelpunkt befindet. Daher wäre in der Mittelpunkt ein passender Ort. Dabei sollte ggf. aber bedachtet werden, dass diese nicht direkt neben z. B. den Motoren liegt, da diese ein Magnetfeld und Schwankungen/Vibrationen erzeugen
 
     b)  test
