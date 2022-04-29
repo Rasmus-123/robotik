@@ -1,0 +1,13 @@
+Aufgabe 1)
+    a)  Ist die IMU weit von dem Mittelpunkt des Roboters entfernt, so sorgt das dafür, dass eigentlich kleine Schwankungen wie leichtes wackeln des Roboters eine deutlich größere Auswirkung auf die IMU hätten, als wenn diese sich nahezu direkt am Mittelpunkt befindet. Daher wäre der Mittelpunkt ein passender Ort. Dabei sollte ggf. aber bedachtet werden, dass diese nicht direkt neben z. B. den Motoren liegt, da diese ein Magnetfeld und Schwankungen/Vibrationen erzeugen
+
+    b)  Ein Ultraschallsensor sendet Ultraschall in einem Art Kegel aus und misst, ob dieser zurück reflektiert wird. Ist eine Reflektion von diesem zu messen, so kann erkannt werden, dass sich in diesem Kegel ein Objekt befunden hat.
+    Möchte man nun die genaue Position eines Objekts bestimmen, so kann man den Ultraschallsensor rotieren und anhand der Ergebnisse stimmen, wo ein Objekt endet bzw. anfängt. Dies funktioniert allerdings nur, wenn es sich nur um ein Objekt handelt und dieses sich auch nicht bewegt.
+
+    c) Die drei Messprinzipien sind:
+        Triangulation:
+            Es wird Licht ausgesandt. Dieses wird dann an einem Objekt gestreuut. Das dabei zurück kehrende Licht wird dann an einem zum Sender versetzen Sensor empfangen. Ist die Position von diesem bekannt, so lässt sich nach dem Strahlensatz die Position des getroffenden Objektes berechnen
+        Laufzeitmessung:
+            Ein Sender sendet einen Lichtstrahl aus. Dieser trifft dann auf ein Objekt und wird gestreuut. Der Sensor misst nun, wann das gestreuute Licht wieder zurück auf den Sensor trifft. Anhand davon lässt sich nun bestimmen wie weit das Objekt entfernt war. Da der Winkel bekannt ist, in welchem der Lichtstrahl ausgesandt wurde, lässt sich damit die Position des Objekts bestimmen
+        Phasendifferenzmessung:
+            Ein Sender sendet Licht aus. Von diesem ist die Wellenlänge bekannt. Nun trifft dieses auf ein Objekt, welches dieses streuut. Dieses trifft dann auch zurück auf einen Messsensor. An diesem kann nun die Phasendifferenz bestimmt werden. Mit dieser lässt sich dann bestimmen wie viel Strecke das Licht zurück gelegt hat und somit dann auch die Position des Objektes. Dabei tritt das Problem auf, dass Phasendifferenzen doppeldeutlich sein können
