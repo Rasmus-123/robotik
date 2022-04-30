@@ -72,9 +72,10 @@ int main(int argc, char **argv) {
   ros::init(argc, argv, "convert_scan_to_cloud");
 
   ros::NodeHandle n;
+  ros::NodeHandle np("~");
 
   // publisher
-  cloud_pub = n.advertise<sensor_msgs::PointCloud2>("~/cloud", 1000);
+  cloud_pub = np.advertise<sensor_msgs::PointCloud2>("cloud", 1000);
 
   // subscriber
   ros::Subscriber sub = n.subscribe("scan", 1000, cloudCallback);
