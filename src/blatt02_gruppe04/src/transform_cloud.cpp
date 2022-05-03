@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
 
     np.param<std::string>("dest_name", dest_node, "base_link");
 
-    np.getParam("my_int", dest_node);
+    np.getParam("dest_name", dest_node);
 
     // publisher
     tf_pub = np.advertise<sensor_msgs::PointCloud2>("cloud", 1000);
