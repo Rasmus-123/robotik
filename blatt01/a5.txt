@@ -1,0 +1,6 @@
+Aufgabe 5:
+	c)
+		Das ROS-Koordinatensystem ist ein Rechtshändiges.
+		Die Vorlesungsfolien rechnen mit einem Linkshändigen Koordinatensystem.
+		
+		Damit ist bei ROS z die (aktuell unwichtige) vertikale "Höhenachse", während bei der Vorlesung y die vertikale "Höhenachse" ist.
