@@ -1,0 +1,28 @@
+Aufgabe 4
+
+    c)  ~/s/r/catkin_ws> rostopic list
+        /base_footprint_pose_ground_truth
+        /ceres_velocity_controller/parameter_descriptions
+        /ceres_velocity_controller/parameter_updates
+        /clock
+        /cmd_vel
+        /gazebo/link_states
+        /gazebo/model_states
+        /gazebo/parameter_descriptions
+        /gazebo/parameter_updates
+        /gazebo/performance_metrics
+        /gazebo/set_link_state
+        /gazebo/set_model_state
+        /imu/data
+        /joint_states
+        /odom
+        /rosout
+        /rosout_agg
+        /scan
+        /tf
+        /tf_static
+        /wheel_rotations
+
+
+        Die Werte, welche von der Simulation geliefert werden sind ziemlich ruhig und beinhalten praktisch kein Rauschen. Die aufgenommene Bag-File hat dies aber.
+        Eine Bag-File enthält nur Aufnahmen von Messdaten. Möchte man aber nun neue/eigene Dinge testen, so wird eine Simulation nützlich. Konkrete Fälle könnten da z. B. Dinge sein, bei denen der Roboter in echt sonst Schaden erhalten könnte, ganz konkret also z. B. wenn unerfahrende Studenten die Geschwindigkeit bzw. allgemein das Fahren des Roboters austesten
