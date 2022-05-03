@@ -1,0 +1,94 @@
+Aufgabe 1
+    a)  Eine Transformation ist eine Rotation und/oder eine Translation eines Vektors. Dies ist z. B. dann sinnvoll, wenn man die Koordinaten eines Koordinatensystems in die eines anderen umwandeln möchte. Dafür rotiert und verschiebt man dann den gewünschten Vektor/Punkt. Das 'Objekt' bleibt dabei immer noch das gleiche, jedoch verändern sich die Koordianten bezogen auf ein anderes Bezugssystem
+
+    b)  Die Einträge a, b, d, e sind die für die Rotation verantwortlich
+
+    c)  Die Einträge c und f sind für die Translation verantwortlich
+
+    d)  Der Punkt muss um eine Dimension "erweitert" werden. In diesem Fall würde aus (x,y) dann (x,y,1) werden
+
+
+Aufgabe 2
+
+    a) Zuerst dreht der Roboter sich leicht nach rechts. Dann fährt dieser eine Rechtskurve
+
+    b)  Bewegung um "1" ist also pi*0.3m / 8 = 11.78cm
+        
+        (in cm)
+        T       0   1       2       3       4       5       6       7       8       9 
+        D_l     0   11.78   23.56   35.34  47.12    58.9    70.68   82.46   94.24   106.02
+        D_r     0   0       11.78   11.78  23.56    23.56   35.34   35.34   47.12   47.12
+
+    c)  Aus der Koodierung wird die Rotationsrichtung nicht direkt deutlich und muss immer mit dem vorherigem Wert ermittelt werden.
+        Es sind nur "grobe" Schritte möglich und man benötigt ggf. genauere Angaben.
+        Zusätzlich könnte es bei der Messung dazu kommen, dass die Sensoren genau dann messen, wenn gerade der Übergang zwischen schwarz und weiß ist. Dabei könnte es dann zu einem undeutlichen Messergebnis kommen.
+        Verwendet man z. B. den Gray Code, so könnte man dieses Problem minimieren, da sich nur genau ein Element bei den Übergangen verändert
+
+Aufgabe 3
+
+    a)  b = 30cm
+        Angenommen rechtshändiges Koordinatensystem
+
+        1.  s_r = 6cm
+            s_l = 10cm
+
+            delta d = (10cm + 6cm) / 2 = 8cm
+            delta theta = (6cm - 10cm) / 30cm = -2/15
+
+            x = 8cm * cos(0 + (-2/15) * 0.5) = 7.98cm
+            y = 8cm * sin(0 + (-2/15) * 0.5) = −0.53cm
+            theta = -2/15
+
+            Pose: (7.98cm, −0.53cm, -2/15)
+
+        2.  delta s_r = 5cm
+            delta s_l = 7cm
+            start theta = -2/15
+
+            delta d = (5 + 7cm) / 2 = 6cm
+            theta = (7cm - 5cm) / 30cm = 1/15
+
+            x = 7.98cm + 6cm * cos((-2/15) + (1/15) * 0.5) = 13.95cm
+            y = −0.53cm + 6cm * sin((-2/15) + (1/15) * 0.5) = −1.13cm
+            theta = -2/15 + 1/15 = -1/15
+            
+            Pose: (13.95cm, −1.13cm, -1/15)
+
+
+    b)  Da die Rotation angibt, in welche "Richtung" der Roboter fährt und die Translation nur wie weit dieser fährt, hat eine falsche Rotation einen größeren Einfluss auf die Position, der da Roboter somit für einige ganz in eine andere Richtung fahren könnte
+
+
+Aufgabe 4
+
+    c)  ~/s/r/catkin_ws> rostopic list
+        /base_footprint_pose_ground_truth
+        /ceres_velocity_controller/parameter_descriptions
+        /ceres_velocity_controller/parameter_updates
+        /clock
+        /cmd_vel
+        /gazebo/link_states
+        /gazebo/model_states
+        /gazebo/parameter_descriptions
+        /gazebo/parameter_updates
+        /gazebo/performance_metrics
+        /gazebo/set_link_state
+        /gazebo/set_model_state
+        /imu/data
+        /joint_states
+        /odom
+        /rosout
+        /rosout_agg
+        /scan
+        /tf
+        /tf_static
+        /wheel_rotations
+
+
+        Die Werte, welche von der Simulation geliefert werden sind ziemlich ruhig und beinhalten praktisch kein Rauschen. Die aufgenommene Bag-File hat dies aber.
+        Eine Bag-File enthält nur Aufnahmen von Messdaten. Möchte man aber nun neue/eigene Dinge testen, so wird eine Simulation nützlich. Konkrete Fälle könnten da z. B. Dinge sein, bei denen der Roboter in echt sonst Schaden erhalten könnte, ganz konkret also z. B. wenn unerfahrende Studenten die Geschwindigkeit bzw. allgemein das Fahren des Roboters austesten
+
+        
+Aufgabe 5)
+
+    c)  Die Formel in der Vorlesung beziehen sich primär auf die Geschwindigkeit der einzelnen Roboterseiten, wohingegen die Formeln auf dem Blatt sich auf die zurückgelegte Strecke beziehen. Da s = v*t macht das zwar einen Unterschied, aber die Formel haben trotzdem eine ähnlich Struktur.
+        Zusätzlich beszieht die Vorlesung sich grüßtenteils auf ein linkshändiges Koordinatensystem und das Blatt auf ein rechtshändiges Koordinatensystem
