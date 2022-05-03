@@ -15,10 +15,27 @@ void tfCallback(const sensor_msgs::PointCloud2::ConstPtr &data) {
 /*     if(!last_topic.compare(dest_node)) {
         tf_pub = np.advertise<sensor_msgs::PointCloud2>(dest_node, 1000);
 
-    } */
+    } 
+    last_topic = dest_node; */
 
-    last_topic = dest_node;
-    tf_pub.publish(payload);
+    tf2_ros::Buffer tfBuffer;
+    tf2_ros::TransformListener tfListener(tfBuffer);
+
+    geometry_msgs::TransformStamped transformStamped;
+    try{
+      transformStamped = tfBuffer.lookupTransform(dest_node, "base_link",
+                               ros::Time(0));
+    }
+    catch (tf2::TransformException &ex) {
+      ROS_WARN("%s",ex.what());
+    }
+
+
+    sensor_msgs::PointCloud2 data_out;
+    tf2::doTransform(*data, data_out, transformStamped);
+
+   
+    tf_pub.publish(data_out);
     ros::spinOnce();
 }
 
@@ -34,7 +51,8 @@ int main(int argc, char **argv) {
     np.getParam("my_int", dest_node);
 
     // publisher
-    tf_pub = np.advertise<sensor_msgs::PointCloud2>(dest_node, 1000);
+    tf_pub = np.advertise<sensor_msgs::PointCloud2>("cloud", 1000);
+
 
     // subscriber
     ros::Subscriber sub = n.subscribe("/convert_scan_to_cloud/cloud", 1000, tfCallback);
