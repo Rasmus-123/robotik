@@ -2,6 +2,8 @@
 #include <sensor_msgs/PointField.h>
 #include <ros/ros.h>
 #include <tf2_ros/transform_listener.h>
+// For some reason, tf2_sensor_msgs was not part of the AUR package ros-noetic-desktop-full
+#include <tf2_sensor_msgs/tf2_sensor_msgs.h>
 #include <geometry_msgs/TransformStamped.h>
 
 
