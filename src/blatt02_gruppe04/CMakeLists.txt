@@ -10,6 +10,8 @@ project(blatt02_gruppe04)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
+  tf2_ros
+  geometry_msgs
 )
 
 ## System dependencies are found with CMake's conventions
