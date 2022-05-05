@@ -1,0 +1,21 @@
+// https://de.wikipedia.org/wiki/Elektrooptische_Entfernungsmessung
+
+a - IMU:
+
+b - Ultraschall:
+	Ein Ultraschallsensor sendet Ultraschallwellen in einem Öffnungswinkel aus 
+    und misst die Dauer bis diese durch Reflektion zurückkehren, oder ob sie zurückkehren.
+    Anhand der Dauer kann eine Entfernung berechnet werden.
+
+    Punktgenau verzeichnen?
+    Sensor bewegen und anhand der Distanzänderung messen wo ein Objekt beginnt und endet?
+
+c - Laser Scanner:
+	Triangulation:
+        Einen Empfänger und Sender so ausrichten, dass der ausgesendete Laserstrahl den Sender trifft.
+        Anhand der Positionen dieser und dem Ausgangswinkel lässt sich die Distanz zum reflektierenden Objekt bestimmen.
+    Phasendifferenzmessung:
+        ? // https://de.wikipedia.org/wiki/Elektrooptische_Entfernungsmessung
+    Laufzeitmessung:
+        Anhand der Dauer bis ein ausgesendeter Laserstrahl wieder zurück reflektiert wird, kann die Distanz zum reflektierenden Objekt bestimmt werden.
+		
