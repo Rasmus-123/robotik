@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
   std_msgs
+  geometry_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -207,3 +208,6 @@ include_directories(
 
 add_executable(convert_scan_to_cloud src/convert_scan_to_cloud.cpp)
 target_link_libraries(convert_scan_to_cloud ${catkin_LIBRARIES})
+
+add_executable(transform_cloud src/transform_cloud.cpp)
+target_link_libraries(transform_cloud ${catkin_LIBRARIES})
