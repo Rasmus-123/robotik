@@ -20,9 +20,38 @@ a - Medianfilterung:
 
 b - Kartesische Koordinaten:
 
-    Winkel-Minimum = -π = -180°
-    Winkel-Maximum = π = 180°
-    Winkel-Erhöhung pro Schritt = π/10 = 18°
-    Schritte: 1-20
+    angle_min = -π = -180°
+    angle_max = π = 180°
+    angle_increment = π/10 = 18°
+    range_min = 1
+    range_max = 20
 
-    ?
+    angle = angle_min + (index * angle_increment)
+
+    Polar Koordinaten zu Kartesischen Koordinaten:
+    x = range * cos(angle)
+    y = range * sin(angle)
+
+    Range: 4 == X: -4.0 Y: -0.0
+    Range: 4 == X: -3.8 Y: -1.24
+    Range: 3 == X: -2.43 Y: -1.76
+    Range: 2 == X: -1.18 Y: -1.62
+    Range: 2 == X: -0.62 Y: -1.9
+    Range: 9 == X: 0.0 Y: -9.0
+    Range: 10 == X: 3.09 Y: -9.51
+    Range: 8 == X: 4.7 Y: -6.47
+    Range: 5 == X: 4.05 Y: -2.94
+    Range: 8 == X: 7.61 Y: -2.47
+    Range: 9 == X: 9.0 Y: 0.0
+    Range: 42 // Ungültig, da 42 > range_max
+    Range: 2 == X: 1.62 Y: 1.18
+    Range: 2 == X: 1.18 Y: 1.62
+    Range: 5 == X: 1.55 Y: 4.76
+    Range: 7 == X: 0.0 Y: 7.0
+    Range: 40 // Ungültig, da 40 > range_max
+    Range: 6 == X: -3.53 Y: 4.85
+    Range: 3 == X: -2.43 Y: 1.76
+    Range: 3 == X: -2.85 Y: 0.93
+
+    Koordinaten:  
+    [(-4.0, -0.0), (-3.8, -1.24), (-2.43, -1.76), (-1.18, -1.62), (-0.62, -1.9), (0.0, -9.0), (3.09, -9.51), (4.7, -6.47), (4.05, -2.94), (7.61, -2.47), (9.0, 0.0), (39.94, 12.98), (1.62, 1.18), (1.18, 1.62), (1.55, 4.76), (0.0, 7.0), (-12.36, 38.04), (-3.53, 4.85), (-2.43, 1.76), (-2.85, 0.93)]
