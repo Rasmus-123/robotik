@@ -64,6 +64,9 @@
   <build_depend>tf2_sensor_msgs</build_depend>
   <build_export_depend>tf2_sensor_msgs</build_export_depend>
   <exec_depend>tf2_sensor_msgs</exec_depend>
+  <build_depend>visualization_msgs</build_depend>
+  <build_export_depend>visualization_msgs</build_export_depend>
+  <exec_depend>visualization_msgs</exec_depend>
 
 
 

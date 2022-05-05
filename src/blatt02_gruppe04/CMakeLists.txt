@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_ros
   geometry_msgs
   tf2_sensor_msgs
+  visualization_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -212,3 +213,6 @@ target_link_libraries(convert_scan_to_cloud ${catkin_LIBRARIES})
 
 add_executable(transform_cloud src/transform_cloud.cpp)
 target_link_libraries(transform_cloud ${catkin_LIBRARIES})
+
+add_executable(online_line_finder src/online_line_finder.cpp)
+target_link_libraries(online_line_finder ${catkin_LIBRARIES})
