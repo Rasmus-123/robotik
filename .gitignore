@@ -1,1 +1,10 @@
 .vscode/
+build/
+install/
+devel/
+
+src/beginner_tutorials/
+src/ceres_robot/
+src/epos2_motor_controller/
+src/uos_tools/
+src/volksbot_driver/
