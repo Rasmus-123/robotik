@@ -44,7 +44,7 @@ void cloudCallback(const sensor_msgs::LaserScanConstPtr& scan)
 
 	cloud.row_step = cloud.width * cloud.point_step;
 
-	// cloud.data.resize(cloud.point_step * cloud.width);
+	cloud.data.resize(cloud.row_step * cloud.height);
 
 	for (int i = 0; i < scan->ranges.size(); i++)
 	{
@@ -62,8 +62,8 @@ void cloudCallback(const sensor_msgs::LaserScanConstPtr& scan)
 
 		int offset = i * 2;
 
-		float* ptr = (float*) &cloud.data;
-
+		float* ptr = (float*) &cloud.data[0];
+		
 		ptr[offset] = x;
 		ptr[offset+1] = y;
 	}
@@ -74,6 +74,9 @@ void cloudCallback(const sensor_msgs::LaserScanConstPtr& scan)
 int main(int argc, char** argv)
 {
 	ros::init(argc, argv, "convert_scan_to_cloud");
+
+	ROS_INFO("Hallo");
+
 	ros::NodeHandle nh;
 
 	pub = nh.advertise<sensor_msgs::PointCloud2>("cloud", 1);
