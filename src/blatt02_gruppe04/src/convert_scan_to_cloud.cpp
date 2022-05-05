@@ -80,11 +80,12 @@ int main(int argc, char** argv)
 
 	ROS_INFO("Hallo");
 
+	ros::NodeHandle nh;
 	ros::NodeHandle nh_p("~");
 
 	pub = nh_p.advertise<sensor_msgs::PointCloud2>("cloud", 1);
 
-	ros::Subscriber sub = nh_p.subscribe("scan", 1, scanCallback);
+	ros::Subscriber sub = nh.subscribe("scan", 1, scanCallback);
 
 	ros::spin();
 }
