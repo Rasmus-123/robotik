@@ -7,7 +7,7 @@
 
 ros::Publisher pub;
 
-void cloudCallback(const sensor_msgs::LaserScanConstPtr& scan)
+void scanCallback(const sensor_msgs::LaserScanConstPtr& scan)
 {
 	sensor_msgs::PointCloud2 cloud;
 	cloud.header.frame_id = "laser";
@@ -80,11 +80,11 @@ int main(int argc, char** argv)
 
 	ROS_INFO("Hallo");
 
-	ros::NodeHandle nh;
+	ros::NodeHandle nh_p("~");
 
-	pub = nh.advertise<sensor_msgs::PointCloud2>("cloud", 1);
+	pub = nh_p.advertise<sensor_msgs::PointCloud2>("cloud", 1);
 
-	ros::Subscriber sub = nh.subscribe("scan", 1, cloudCallback);
+	ros::Subscriber sub = nh_p.subscribe("scan", 1, scanCallback);
 
 	ros::spin();
 }
