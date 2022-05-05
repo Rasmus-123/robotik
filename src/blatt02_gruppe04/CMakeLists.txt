@@ -204,3 +204,6 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+add_executable(convert_scan_to_cloud src/convert_scan_to_cloud.cpp)
+target_link_libraries(convert_scan_to_cloud ${catkin_LIBRARIES})
