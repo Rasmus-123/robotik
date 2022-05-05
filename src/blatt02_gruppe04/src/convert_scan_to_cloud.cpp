@@ -35,9 +35,10 @@ void cloudCallback(const sensor_msgs::LaserScanConstPtr& scan)
 
 	cloud.fields.push_back(field_x);
 	cloud.fields.push_back(field_y);
-	//cloud.fields.push_back(field_z);
+	cloud.fields.push_back(field_z);
 
-	cloud.point_step = 2 * sizeof(float);
+
+	cloud.point_step = 3 * sizeof(float);
 
 	cloud.width = scan->ranges.size();
 	cloud.height = 1;
@@ -59,13 +60,15 @@ void cloudCallback(const sensor_msgs::LaserScanConstPtr& scan)
 
 		float x = range * std::cos(angle);
 		float y = range * std::sin(angle);
+		float z = 0;
 
-		int offset = i * 2;
+		int offset = i * 3;
 
 		float* ptr = (float*) &cloud.data[0];
-		
+
 		ptr[offset] = x;
 		ptr[offset+1] = y;
+		ptr[offset+2] = z;
 	}
 	
 	pub.publish(cloud);
