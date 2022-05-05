@@ -1,0 +1,28 @@
+a - Medianfilterung:
+    Median[4, 4, 3, 2, 2]  = 3 
+    Median[4, 3, 2, 2, 9]  = 3 
+    Median[3, 2, 2, 9, 10] = 3
+    Median[2, 2, 9, 10, 8] = 8
+    Median[2, 9, 10, 8, 5] = 8
+    Median[9, 10, 8, 5, 8] = 8
+    Median[10, 8, 5, 8, 9] = 8
+    Median[8, 5, 8, 9, 42] = 8
+    Median[5, 8, 9, 42, 2] = 8
+    Median[8, 9, 42, 2, 2] = 8
+    Median[9, 42, 2, 2, 5] = 5
+    Median[42, 2, 2, 5, 7] = 5
+    Median[2, 2, 5, 7, 40] = 5
+    Median[2, 5, 7, 40, 6] = 6
+    Median[5, 7, 40, 6, 3] = 6
+    Median[7, 40, 6, 3, 3] = 6
+
+    [3, 3, 3, 8, 8, 8, 8, 8, 8, 8, 5, 5, 5, 6, 6, 6]
+
+b - Kartesische Koordinaten:
+
+    Winkel-Minimum = -π = -180°
+    Winkel-Maximum = π = 180°
+    Winkel-Erhöhung pro Schritt = π/10 = 18°
+    Schritte: 1-20
+
+    ?
