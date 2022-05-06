@@ -1,0 +1,4 @@
+Bild 1 -> Hough-Raum 4
+Bild 2 -> Hough-Raum 1
+Bild 3 -> Hough-Raum 3
+Bild 4 -> Hough-Raum 2
