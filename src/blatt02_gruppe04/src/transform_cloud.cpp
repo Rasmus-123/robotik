@@ -46,11 +46,13 @@ int main(int argc, char** argv)
 
 	ros::NodeHandle nh_p("~");
 
-	pub = nh_p.advertise<geometry_msgs::TransformStamped>("cloud", 1);
+	pub = nh_p.advertise<sensor_msgs::PointCloud2>("cloud", 1);
 
     nh_p.param<std::string>("target_frame", target_frame, "base_link");
 
-	ros::Subscriber sub = nh_p.subscribe("cloud", 1, cloudCallback);
+    ROS_INFO_STREAM("Target_Frame: " << target_frame);
+
+	ros::Subscriber sub = nh_p.subscribe("/convert_scan_to_cloud/cloud", 1, cloudCallback);
 
 	ros::spin();
 }
