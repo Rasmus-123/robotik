@@ -20,6 +20,7 @@ void cloudCallback(const sensor_msgs::PointCloud2ConstPtr& cloud)
 
     geometry_msgs::TransformStamped transformStamped;
 
+    // Keep retrying the lookupTransform until it succeeds
     while (ros::ok())
     {
         try
@@ -29,7 +30,7 @@ void cloudCallback(const sensor_msgs::PointCloud2ConstPtr& cloud)
         }
         catch (tf2::TransformException& ex)
         {
-            ROS_WARN("%s", ex.what());
+            //ROS_WARN("%s", ex.what());
             ros::Duration(1.0).sleep();
             continue;
         }
@@ -50,12 +51,15 @@ int main(int argc, char** argv)
 
 	ros::NodeHandle nh_p("~");
 
+    // Publishing private topic
 	pub = nh_p.advertise<sensor_msgs::PointCloud2>("cloud", 1000);
 
+    // Private parameter transform_cloud/target_frame
     nh_p.param<std::string>("target_frame", target_frame, "base_link");
 
     ROS_INFO_STREAM("Target_Frame: " << target_frame);
 
+    // Subscribing to private topic from convert_scan_to_cloud
 	ros::Subscriber sub = nh_p.subscribe("/convert_scan_to_cloud/cloud", 1000, cloudCallback);
 
 	ros::spin();
