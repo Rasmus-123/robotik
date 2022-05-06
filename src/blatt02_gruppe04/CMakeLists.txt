@@ -216,3 +216,6 @@ target_link_libraries(transform_cloud ${catkin_LIBRARIES})
 
 add_executable(online_line_finder src/online_line_finder.cpp)
 target_link_libraries(online_line_finder ${catkin_LIBRARIES})
+
+add_executable(points_and_lines src/points_and_lines.cpp)
+target_link_libraries(points_and_lines ${catkin_LIBRARIES})

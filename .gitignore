@@ -1,4 +1,9 @@
-.vscode/*
+.vscode
 .idea
 build
 devel
+src/ceres_robot
+src/epos2_motor_controller
+src/sick_tim
+src/uos_tools
+src/volksbot_driver
