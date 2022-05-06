@@ -2,6 +2,8 @@
 .idea
 build
 devel
+install
+src/beginner_tutorials
 src/ceres_robot
 src/epos2_motor_controller
 src/sick_tim
