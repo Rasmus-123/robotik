@@ -1,4 +1,8 @@
 a - Medianfilterung:
+
+    Median[3, 3, 4, 4, 3]  = 3 
+    Median[3, 4, 4, 3, 2]  = 3 
+
     Median[4, 4, 3, 2, 2]  = 3 
     Median[4, 3, 2, 2, 9]  = 3 
     Median[3, 2, 2, 9, 10] = 3
@@ -16,7 +20,11 @@ a - Medianfilterung:
     Median[5, 7, 40, 6, 3] = 6
     Median[7, 40, 6, 3, 3] = 6
 
+    Median[40, 6, 3, 3, 4] = 4
+    Median[6, 3, 3, 4, 4] = 4
+
     [3, 3, 3, 8, 8, 8, 8, 8, 8, 8, 5, 5, 5, 6, 6, 6]
+    [3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 8, 5, 5, 5, 6, 6, 6, 4, 4]
 
 b - Kartesische Koordinaten:
 
