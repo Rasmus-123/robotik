@@ -15,24 +15,23 @@ std::string dest_node;
 void tfCallback(const sensor_msgs::PointCloud2::ConstPtr &data) {
     geometry_msgs::TransformStamped payload;
     std::string last_topic;
-/*     if(!last_topic.compare(dest_node)) {
-        tf_pub = np.advertise<sensor_msgs::PointCloud2>(dest_node, 1000);
-
-    } 
-    last_topic = dest_node; */
 
     tf2_ros::Buffer tfBuffer;
     tf2_ros::TransformListener tfListener(tfBuffer);
-
     geometry_msgs::TransformStamped transformStamped;
-    try{
-      transformStamped = tfBuffer.lookupTransform(dest_node, "base_link",
-                               ros::Time(0));
-    }
-    catch (tf2::TransformException &ex) {
-      ROS_WARN("%s",ex.what());
-    }
 
+    while(ros::ok()) {
+        try {
+            transformStamped = tfBuffer.lookupTransform(dest_node, data->header.frame_id,
+                                ros::Time(0));
+            break;
+        }
+        catch (tf2::TransformException &ex) {
+            ROS_WARN("%s",ex.what());
+            ros::Duration(1.0).sleep();
+            continue;
+        }
+    }
 
     sensor_msgs::PointCloud2 data_out;
     tf2::doTransform(*data, data_out, transformStamped);
@@ -49,7 +48,7 @@ int main(int argc, char **argv) {
     ros::NodeHandle n;
     ros::NodeHandle np("~");
 
-    np.param<std::string>("dest_name", dest_node, "base_link");
+    np.param<std::string>("dest_name", dest_node, "laser");
 
     np.getParam("dest_name", dest_node);
 

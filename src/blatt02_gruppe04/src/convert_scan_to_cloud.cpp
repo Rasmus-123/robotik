@@ -1,16 +1,16 @@
-#include "sensor_msgs/PointCloud2.h"
-#include "sensor_msgs/LaserScan.h"
-#include "sensor_msgs/PointField.h"
-#include "ros/ros.h"
+#include <sensor_msgs/PointCloud2.h>
+#include <sensor_msgs/LaserScan.h>
+#include <sensor_msgs/PointField.h>
+#include <ros/ros.h>
 
-#include "cmath"
+#include <cmath>
 
 ros::Publisher cloud_pub;
 
 
 void cloudCallback(const sensor_msgs::LaserScan::ConstPtr &data) {
     sensor_msgs::PointCloud2 payload;
-    payload.header.frame_id = "laser";
+    payload.header.frame_id = data->header.frame_id;
     payload.header.stamp = data->header.stamp;
 
 
@@ -50,8 +50,7 @@ void cloudCallback(const sensor_msgs::LaserScan::ConstPtr &data) {
     for(int i = 0; i < data->ranges.size(); i++) {
         float x, y;
         if(data->range_min >= data->ranges[i] || data->ranges[i] >= data->range_max) {
-            x = 0;
-            y = 0;
+            continue;
         } else {
             x = data->ranges[i] * cos(data->angle_min + i * data->angle_increment);
             y = data->ranges[i] * sin(data->angle_min + i * data->angle_increment);
@@ -64,7 +63,6 @@ void cloudCallback(const sensor_msgs::LaserScan::ConstPtr &data) {
     }
 
     cloud_pub.publish(payload);
-    ros::spinOnce();
 }
 
 int main(int argc, char **argv) {

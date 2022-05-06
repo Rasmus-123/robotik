@@ -1,0 +1,2 @@
+Die transformierte Punktwolke liegt genau auf der anderen Punktwolke.
+Genau das gleiche ist der Fall, wenn man den Parameter von base_link auf base_footprint abändert. Die Position der Wolke verändert sich in RViz nicht.

@@ -1,5 +1,8 @@
 Aufgabe 2)
-    a)  Median(4,4,3,2,2) = 3
+    a)  Da aus Teil b bekannt ist, dass es sich um einen 360 Grad Scanner handelt, lassen sich für die Randwerte die Werte der anderen Seite nehmen.
+        Median(3,3,4,4,3) = 3
+        Median(3,4,4,3,2) = 3
+        Median(4,4,3,2,2) = 3
         Median(4,3,2,2,9) = 3
         Median(3,2,2,9,10) = 3
         Median(2,2,9,10,8) = 8
@@ -15,9 +18,11 @@ Aufgabe 2)
         Median(2,5,7,40,6) = 6
         Median(5,7,40,6,3) = 6
         Median(7,40,6,3,3) = 6
+        Median(40,6,3,3,4) = 4
+        Median(6,3,3,4,4) = 4
 
 
-        [3.0, 3.0, 3.0, 8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 8.0, 5.0, 5.0, 5.0, 6.0, 6.0, 6.0]
+        [3, 3, 3, 3, 3, 8, 8, 8, 8, 8, 8, 8, 5, 5, 5, 6, 6, 6, 4, 4]
 
     b)  Der Sensor startet bei -180° und geht bis 180°. Dabei entspricht ein Wert der Messdaten je 18°.
         Da der Sensor nur in einem Radius von 1 bis 20 messen kann, sind die Werte 42 und 40 invalide.
@@ -77,7 +82,7 @@ Aufgabe 2)
         y = 9 * sin(-π + 10*(π/10)) = 0.0
 
 
-        Wert 42:
+        Wert 42 (ungültig, da über max. Range):
         x = 42 * cos(-π + 11*(π/10)) = 39.94
         y = 42 * sin(-π + 11*(π/10)) = 12.98
 
@@ -102,7 +107,7 @@ Aufgabe 2)
         y = 7 * sin(-π + 15*(π/10)) = 7.0
 
 
-        Wert 40:
+        Wert 40 (ungültig, da über max. Range):
         x = 40 * cos(-π + 16*(π/10)) = -12.36
         y = 40 * sin(-π + 16*(π/10)) = 38.04
 
