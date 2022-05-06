@@ -7,7 +7,9 @@
 
 ros::Publisher cloud_pub;
 
-
+/**
+ * Callback function for LaserScan 
+ */
 void cloudCallback(const sensor_msgs::LaserScan::ConstPtr &data) {
     sensor_msgs::PointCloud2 payload;
     payload.header.frame_id = data->header.frame_id;
@@ -42,24 +44,22 @@ void cloudCallback(const sensor_msgs::LaserScan::ConstPtr &data) {
     payload.width = data->ranges.size();
     payload.height = 1;
     payload.row_step = payload.width * payload.point_step;
-    payload.data.resize(payload.point_step * payload.width);
+    payload.data.resize(payload.row_step * payload.height);
 
     // reinterpret byte memory as float memory
     float* data_raw = reinterpret_cast<float*>(&payload.data[0]);
 
     for(int i = 0; i < data->ranges.size(); i++) {
-        float x, y;
         if(data->range_min >= data->ranges[i] || data->ranges[i] >= data->range_max) {
             continue;
-        } else {
-            x = data->ranges[i] * cos(data->angle_min + i * data->angle_increment);
-            y = data->ranges[i] * sin(data->angle_min + i * data->angle_increment);
         }
+        
+        float x = data->ranges[i] * cos(data->angle_min + i * data->angle_increment);
+        float y = data->ranges[i] * sin(data->angle_min + i * data->angle_increment);
     
         data_raw[i*3] = x;
         data_raw[i*3 + 1] = y;
         data_raw[i*3 + 2] = 0;
-        
     }
 
     cloud_pub.publish(payload);
