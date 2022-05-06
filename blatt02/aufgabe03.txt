@@ -1,0 +1,1 @@
+Die Point Cloud (weiß) und der Laser Scan (rot) liegen praktisch genau aufeinander
