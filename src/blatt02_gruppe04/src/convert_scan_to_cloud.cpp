@@ -10,9 +10,8 @@ ros::Publisher pub;
 void scanCallback(const sensor_msgs::LaserScanConstPtr& scan)
 {
 	sensor_msgs::PointCloud2 cloud;
-	cloud.header.frame_id = "laser";
+	cloud.header.frame_id = scan->header.frame_id;
 	cloud.header.stamp = scan->header.stamp;
-	cloud.header.seq = scan->header.seq; //?
 
 
 	sensor_msgs::PointField field_x;
@@ -64,7 +63,7 @@ void scanCallback(const sensor_msgs::LaserScanConstPtr& scan)
 
 		int offset = i * 3;
 
-		float* ptr = (float*) &cloud.data[0];
+		float* ptr = reinterpret_cast<float*>(&cloud.data[0]);
 
 		ptr[offset] = x;
 		ptr[offset+1] = y;
@@ -83,9 +82,9 @@ int main(int argc, char** argv)
 	ros::NodeHandle nh;
 	ros::NodeHandle nh_p("~");
 
-	pub = nh_p.advertise<sensor_msgs::PointCloud2>("cloud", 1);
+	pub = nh_p.advertise<sensor_msgs::PointCloud2>("cloud", 1000);
 
-	ros::Subscriber sub = nh.subscribe("scan", 1, scanCallback);
+	ros::Subscriber sub = nh.subscribe("scan", 1000, scanCallback);
 
 	ros::spin();
 }
