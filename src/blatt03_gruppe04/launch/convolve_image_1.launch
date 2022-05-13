@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+  
+<node name="sobel_kernel" pkg="blatt03_gruppe04" type="convolve_image">
+    <remap from="image_input" to="/camera/rgb/image_rect_color"/>
+
+    <rosparam param="kernel_rows">3</rosparam>
+    <rosparam param="kernel_columns">3</rosparam>
+    <rosparam param="kernel">[-1,-2,-1,0,0,0,1,2,1]</rosparam>
+</node>
+
+</launch>
