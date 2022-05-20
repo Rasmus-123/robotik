@@ -1,0 +1,16 @@
+Aufgabe 4
+a)  TODO: Der Zustand x_t ist das hier beschriebene μ_t. Somit wird dieser durch den vorherigen Zustand x_{t-1}
+    Es wird angenommen, dass die Wahrscheinlich von x_t normalverteilt ist.
+
+b)  TODO: A beschreibt das Transitionsmodell. Wenn also irgendwelche spontanen Transitionen bei jedem Zeitschritt auftreten (können?), so wird das mit dieser Matrix modelliert. Liegen keine Transitionen vor, so ist diese Matrix einfach die Einheitsmatrix (in der Größe von μ bzw. x)
+    B ist eine Matrix, welche die Aktion u in den gleichen Raum wie den Zustand umwandelt
+    H ist eine Matrix, welche den Zustand x in den gleichen Raum wie die Messung umwandelt
+
+    Dabei könnten durch die Matrizen z. B. Aktionen wie Umwandlung der Einheiten oder Tauschen der Einträge stattfinden
+
+c)  TODO: Σ_{t+1} ist der Kalman-Gain. Mit diesem wird abgebildet, wie stark die Messung gewichtet wird.
+
+d)  a. Der Prädiktion wird hier stärker vertraut als der Messung. Daher liegt die Korrektur näher an der Prädiktion und es könnte aus einem 1D-Kalman-Filter stammen
+    b. Der Messung wird hier stärker vertraut als der Prädiktion. Daher liegt die Korrektur ein bisschen näher an der Messung und es könnte aus einem 1D-Kalman-Filter stammen
+    c. Die Korrektur sollte eigentlich einen geringeren Sigma-Wert haben als je die Prädiktion oder die Messung, was hier aber nicht gegeben ist. Daher stammt dieses Bild nicht aus einem 1D-Kalman-Filter
+    d. Der Messung wird hier stärker vertraut als der Prädiktion. Daher liegt die Korrektur ein bisschen näher an der Messung und es könnte aus einem 1D-Kalman-Filter stammen

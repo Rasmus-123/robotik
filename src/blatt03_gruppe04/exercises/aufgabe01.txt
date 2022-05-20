@@ -1,0 +1,33 @@
+Aufgabe 1
+a)  5x5 Gauss-Kernel:
+    0.003    0.0133  0.0219  0.0133  0.003
+    0.0133   0.0596  0.0983  0.0596  0.0133
+    0.0219   0.0983  0.1621  0.0983  0.0219
+    0.0133   0.0596  0.0983  0.0596  0.0133
+    0.003    0.0133  0.0219  0.0133  0.003
+
+    Mit steigendem Sigma wird die Verteilung gestaucht, was dazu führt, dass es zu einem stärkeren Blur führt
+
+b)  Siehe Bild und:
+    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 
+    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 
+    255 255 255 255 255 254 251 246 246 251 254 255 255 255 255 255 
+    255 255 255 255 255 251 232 206 206 232 251 255 255 255 255 255 
+    255 255 255 255 255 245 202 139 139 202 245 255 255 255 255 255 
+    255 255 255 255 255 242 183  99  99 183 242 255 255 255 255 255 
+    255 255 255 255 255 241 179  90  90 179 241 255 255 255 255 255 
+    255 255 255 255 255 241 179  90  90 179 241 255 255 255 255 255 
+    255 255 255 255 255 241 179  90  90 179 241 255 255 255 255 255 
+    255 255 255 255 255 241 179  90  90 179 241 255 255 255 255 255 
+    255 255 255 255 255 242 183  99  99 183 242 255 255 255 255 255 
+    255 255 255 255 255 245 202 139 139 202 245 255 255 255 255 255 
+    255 255 255 255 255 251 232 206 206 232 251 255 255 255 255 255 
+    255 255 255 255 255 254 251 246 246 251 254 255 255 255 255 255 
+    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 
+    255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 255 
+
+    Unter der Annahme, dass das Bild bei der Randbetrachtung gespiegelt wurde.
+
+c)  Durch den dadurch entstehenden Blur wird das Rauschen in dem Bild verringert, was somit einen gewissen Fehler im Bild unterdrückt und somit bei vielen Filtern, welche danach angewandt werden, für ein besseres Ergebnis sorgt.
+
+d)  Der Gauss-Filter lässt sich dann auf jeden Kanal einzeln anwenden. In dem hier gegebenen Bild lagen die Werte zwischen 0 und 255 vor. Genau das gleiche würde auch für jeden Kanal bei einem RGB Bild gelten. Daher ändert sich dort nichts an der Anwendung. Zum Schluss werden dann einfach nur die drei Kanäle wieder zusammen geführt.

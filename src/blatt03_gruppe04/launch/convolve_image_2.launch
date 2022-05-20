@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<launch>
+  
+<node name="gauss_kernel" pkg="blatt03_gruppe04" type="convolve_image">
+    <remap from="image_input" to="/camera/rgb/image_rect_color"/>
+    <remap from="image_output" to="gauss_output"/>
+
+    <rosparam param="kernel_rows">5</rosparam>
+    <rosparam param="kernel_columns">5</rosparam>
+    <rosparam param="kernel">[0.003,0.0133,0.0219,0.0133,0.003, 0.0133,0.0596,0.0983,0.0596,0.0133, 0.0219,0.0983,0.1621,0.0983,0.0219, 0.0133,0.0596,0.0983,0.0596,0.0133, 0.003,0.0133,0.0219,0.0133,0.003]</rosparam>
+</node>
+
+<node name="laplace_kernel" pkg="blatt03_gruppe04" type="convolve_image">
+    <remap from="image_input" to="gauss_output"/>
+    <remap from="image_output" to="laplace_output"/>
+
+    <rosparam param="kernel_rows">5</rosparam>
+    <rosparam param="kernel_columns">5</rosparam>
+    <rosparam param="kernel">[0,0,-1,0,0,0,-1,-2,-1,0,-1,-2,16,-2,-1,0,-1,-2,-1,0,0,0,-1,0,0]</rosparam>
+</node>
+
+</launch>

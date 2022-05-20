@@ -1,0 +1,8 @@
+Aufgabe 3
+    a)  Bei SIFT wird zuerst eine Menge von Difference of Gaussians berechnet. Dabei wird die Varianz erhöht. Keypoints, welche in allen dabei entstandenen DoGs vorhanden bleiben sind dann starke Keypoints.
+    Außerdem werden die Bilder auf verschiedene Größen skaliert, auf diesen findet dann das gleiche Verfahren wie zuvor beschrieben statt.
+    Ist ein Keypointkandidat nun bei verschiedenen DoGs mit anderer Varianz genauso wie bei verschiedenen Skalierungen immer noch bestimmbar, so wird dieser als Keypoint ausgewählt.
+
+    Mithilfe des Bildgradienten um den Keypoint herum lässt sich dann die Rotation dessen bestimmen, indem der Bildgradienten so rotiert wird, dass der stärkste Gradient nach oben zeigt.
+
+    b)  Wurde ein Keypoint gefunden, so wird der Bildgradient um diesen herum betrachtet. Dieser wird zuerst so rotiert, dass der stärkste Gradient nach oben zeigt. Danach wird dieser in Teilarrays eingeteilt. Auf jedem dieser Teilarrays wird nun ein Gradientenhistogramm berechnet. Die dabei entstandenen Histogramme stellen dann den Deskriptor.
