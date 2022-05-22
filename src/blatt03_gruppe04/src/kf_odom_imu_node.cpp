@@ -15,22 +15,20 @@
 #include <tf2/transform_datatypes.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
-using namespace Eigen;
-/* ros::Time last_imu_time; */
-
-
 #define _USE_MATH_DEFINES
 #include <cmath>
+
+using namespace Eigen;
 
 nav_msgs::Odometry::ConstPtr last_odom;
 
 ros::Publisher pose_pub, tf_pub;
 
-constexpr int DIMENSION_ZUSTAND = 4; // n
-constexpr int DIMENSION_AKTION = 4; // m
-constexpr int DIMENSION_MESSUNG = 2; // l
+constexpr int DIMENSION_ZUSTAND = 4;    // n
+constexpr int DIMENSION_AKTION = 4;     // m
+constexpr int DIMENSION_MESSUNG = 2;    // l
 
-
+// https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles#Source_code_2
 struct EulerAngles {
     double roll, pitch, yaw;
 };
@@ -70,9 +68,10 @@ void kfCallback(const sensor_msgs::Imu::ConstPtr &imu, const nav_msgs::Odometry:
     p.header.frame_id = "world";
     p.header.stamp = imu->header.stamp;
 
-    static Matrix<double, DIMENSION_ZUSTAND, 1> x({0,0,0,1});       // Zustand (x,y,qZ,qW)
-    Matrix<double, DIMENSION_AKTION, 1> u;                          // Aktion (dx,dy,dqZ,dqW)
-    Matrix<double, DIMENSION_MESSUNG, 1> z;                         // Messung (qZ,qW)
+    static Matrix<double, DIMENSION_ZUSTAND, 1> x({0,0,0,1});               // Zustand (x,y,qZ,qW)
+    Matrix<double, DIMENSION_AKTION, 1> u;                                  // Aktion (dx,dy,dqZ,dqW)
+    // Die Messung liefert keinen absoluten Wert für die Position. Daher wurde sich bewusst dafür entschieden, dass die Messung nur Einfluss auf die Rotation und nicht auf die zurückgelegte Distanz hat
+    Matrix<double, DIMENSION_MESSUNG, 1> z;                                 // Messung (qZ,qW)
 
     Matrix<double, DIMENSION_ZUSTAND, DIMENSION_ZUSTAND> SigmaU;            // Kovarianzmatrix für u
     Matrix<double, DIMENSION_MESSUNG, DIMENSION_MESSUNG> SigmaZ;            // Kovarianzmatrix für z
@@ -86,21 +85,10 @@ void kfCallback(const sensor_msgs::Imu::ConstPtr &imu, const nav_msgs::Odometry:
     Matrix<double, DIMENSION_ZUSTAND, DIMENSION_AKTION> B;
     B.setIdentity();
 
+    // Konvertiert die Zustandsmatrix in den Raum der Messung
     Matrix<double, DIMENSION_MESSUNG, DIMENSION_ZUSTAND> H;
     H << 0,0,1,0,
         0,0,0,1;
-
-
-    // s = a*t^2
-   /*  int t = imu->header.stamp.sec() - last_imu_time.sec();
-    last_imu_time = imu->header.stamp;
-    z(0) = x(0) + imu->linear_acceleration.x * t*t; */
-
-
-    //EulerAngles last_odom_eu = toEulerAngles(last_odom->pose.pose.orientation);
-    //EulerAngles odom_eu = toEulerAngles(odom->pose.pose.orientation);
-
-    //double dzr = std::fmod(last_odom_eu.yaw - odom_eu.yaw, 2.0*M_PI);
 
     geometry_msgs::Quaternion tmpQ;
     tmpQ.z = x(2);
@@ -110,6 +98,7 @@ void kfCallback(const sensor_msgs::Imu::ConstPtr &imu, const nav_msgs::Odometry:
 
     double odom_delta_t = last_odom->header.stamp.toSec() - odom->header.stamp.toSec();
 
+    // Relative Bewegung zu er letzten bestimmten Position wird mithilfe der Odometrie bestimmt
     u(0) = -std::cos(x_eu.yaw) * odom->twist.twist.linear.x * odom_delta_t;
     u(1) = -std::sin(x_eu.yaw) * odom->twist.twist.linear.x * odom_delta_t;
     u(2) = last_odom->pose.pose.orientation.z - odom->pose.pose.orientation.z;
@@ -122,7 +111,7 @@ void kfCallback(const sensor_msgs::Imu::ConstPtr &imu, const nav_msgs::Odometry:
         SigmaT(i,i) = 1;
     }
 
-    
+    // Kovarianz aus den Sensordaten wird in die Matrizen geschrieben
     SigmaU(0,0) = odom->pose.covariance.at(0);
     SigmaU(1,1) = odom->pose.covariance.at(6+1);
     SigmaU(2,2) = odom->pose.covariance.at(35);
@@ -131,8 +120,6 @@ void kfCallback(const sensor_msgs::Imu::ConstPtr &imu, const nav_msgs::Odometry:
     SigmaZ(0,0) = imu->orientation_covariance.at(8);
     SigmaZ(1,1) = imu->orientation_covariance.at(8);
 
-    //auto K = (A*SigmaT*A.transpose() + SigmaU) * H.transpose() * (H * (A*SigmaT*A.transpose() + SigmaU) * H.transpose() + SigmaZ).inverse();
-    
     // Prädiktion
     x = A*x + B*u;
     SigmaT = A*SigmaT*A.transpose() + SigmaU;
@@ -141,6 +128,7 @@ void kfCallback(const sensor_msgs::Imu::ConstPtr &imu, const nav_msgs::Odometry:
     auto K = SigmaT*H.transpose() * (H*SigmaT*H.transpose() + SigmaZ).inverse();
     x = x + K*(z - H*x);
     SigmaT = (E - K*H) * SigmaT;
+    //
 
     last_odom = odom;
 
@@ -149,6 +137,7 @@ void kfCallback(const sensor_msgs::Imu::ConstPtr &imu, const nav_msgs::Odometry:
     p.pose.orientation.z = x(2);
     p.pose.orientation.w = x(3);
 
+    // Wandelt die Pose in eine Transformation um und published diese. Wir verstehen allerdings nicht ganz, was hier der gewünschte Effekt ist.
     geometry_msgs::Transform tfp;
     tfp.rotation = p.pose.orientation;
     tfp.translation.x = p.pose.position.x;
@@ -171,7 +160,6 @@ int main(int argc, char **argv) {
 
 
     // subscriber
-
     message_filters::Subscriber<sensor_msgs::Imu> imu_sub(nh, "/imu/data", 1);
     message_filters::Subscriber<nav_msgs::Odometry> odom_sub(nh, "/odom", 1);
 
