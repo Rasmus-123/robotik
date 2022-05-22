@@ -105,8 +105,6 @@ void kfCallback(const sensor_msgs::Imu::ConstPtr &imu, const nav_msgs::Odometry:
 
     EulerAngles x_eu = toEulerAngles(tmpQ);
 
-    ROS_INFO_STREAM(x_eu);
-
     double odom_delta_t = last_odom->header.stamp.toSec() - odom->header.stamp.toSec();
 
     u(0) = std::cos(x_eu.yaw) * odom->twist.twist.linear.x * odom_delta_t;
