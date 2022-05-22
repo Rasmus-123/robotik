@@ -12,6 +12,9 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
   sensor_msgs
   cv_bridge
+  message_filters
+  nav_msgs
+  eigen_conversions
 )
 
 ## System dependencies are found with CMake's conventions
@@ -208,3 +211,6 @@ include_directories(
 
 add_executable(convolve_image src/convolve_image.cpp)
 target_link_libraries(convolve_image ${catkin_LIBRARIES})
+
+add_executable(kalman_filter src/kalman_filter.cpp)
+target_link_libraries(kalman_filter ${catkin_LIBRARIES})
