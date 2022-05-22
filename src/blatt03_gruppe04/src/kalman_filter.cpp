@@ -13,9 +13,9 @@
 
 
 
-constexpr int DIMENSION_ZUSTAND = 1; // n
-constexpr int DIMENSION_AKTION = 1; // m
-constexpr int DIMENSION_MESSUNG = 1; // l
+constexpr int DIMENSION_ZUSTAND = 4; // n = [x, y, qZ, qW]
+constexpr int DIMENSION_AKTION = 4; // m = [delta_x, delta_y, delta_qZ, delta_qW]
+constexpr int DIMENSION_MESSUNG = 1; // l = [qZ, qW]
 
 /**
  * Eigen
@@ -91,6 +91,8 @@ auto correction(const Sensormodell& H, const Kovarianzsensormodell& Sigma_Z, con
     auto new_K = new_sigma_strich * H.transpose() * (H * new_sigma_strich * H.transpose() + Sigma_Z).inverse();
 
     auto new_x = new_x_strich + new_K * (Z - H * new_x_strich);
+
+    std::cout << new_x << std::endl;
 
     auto new_sigma = (einheitsmatrix - new_K * H) * new_sigma_strich;
 
