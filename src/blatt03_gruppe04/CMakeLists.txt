@@ -12,7 +12,12 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
   sensor_msgs
   cv_bridge
+  message_filters
+  nav_msgs
+  geometry_msgs
 )
+
+find_package(Eigen3 REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -208,3 +213,6 @@ include_directories(
 
 add_executable(convolve_image src/convolve_image.cpp)
 target_link_libraries(convolve_image ${catkin_LIBRARIES})
+
+add_executable(kf_odom_imu_node src/kf_odom_imu_node.cpp)
+target_link_libraries(kf_odom_imu_node ${catkin_LIBRARIES} Eigen3::Eigen)

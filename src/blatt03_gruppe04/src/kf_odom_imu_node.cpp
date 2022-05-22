@@ -11,8 +11,6 @@
 
 #include <Eigen/Dense>
 
-#include <tf2_transorm
-
 using namespace Eigen;
 /* ros::Time last_imu_time; */
 
@@ -20,7 +18,7 @@ using namespace Eigen;
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-nav_msgs::Odometry::Ptr last_odom;
+nav_msgs::Odometry::ConstPtr last_odom;
 
 ros::Publisher pub;
 
@@ -58,6 +56,12 @@ EulerAngles toEulerAngles(geometry_msgs::Quaternion q) {
 
 
 void kfCallback(const sensor_msgs::Imu::ConstPtr &imu, const nav_msgs::Odometry::ConstPtr &odom) {
+
+    if(!last_odom) {
+        last_odom = odom;
+        return;
+    }
+
     geometry_msgs::PoseStamped p;
     p.header.frame_id = "world";
     p.header.stamp = imu->header.stamp;
@@ -90,17 +94,18 @@ void kfCallback(const sensor_msgs::Imu::ConstPtr &imu, const nav_msgs::Odometry:
     z(0) = x(0) + imu->linear_acceleration.x * t*t; */
 
 
-    //EulerAngles last_odom_eu = toEulerAngles(last_odom->pose.pose.orientation);
-    //EulerAngles odom_eu = toEulerAngles(odom->pose.pose.orientation);
+    EulerAngles last_odom_eu = toEulerAngles(last_odom->pose.pose.orientation);
+    EulerAngles odom_eu = toEulerAngles(odom->pose.pose.orientation);
 
-    //double dzr = (last_odom_eu.yaw - odom_eu.yaw) % 2*M_PI;
+    double dzr = std::fmod(last_odom_eu.yaw - odom_eu.yaw, 2.0*M_PI);
+
+    ROS_INFO_STREAM(dzr);
 
 
     u(0) = last_odom->pose.pose.position.x - odom->pose.pose.position.x;
     u(1) = last_odom->pose.pose.position.y - odom->pose.pose.position.y;
     u(2) = last_odom->pose.pose.orientation.z - odom->pose.pose.orientation.z;
     u(3) = last_odom->pose.pose.orientation.w - odom->pose.pose.orientation.w;
-
 
     z(0) = imu->orientation.z;
     z(1) = imu->orientation.w;
@@ -130,6 +135,12 @@ void kfCallback(const sensor_msgs::Imu::ConstPtr &imu, const nav_msgs::Odometry:
     SigmaT = (E - K*H) * SigmaT;
 
     last_odom = odom;
+
+    p.pose.position.x = x(0);
+    p.pose.position.y = x(1);
+    p.pose.orientation.z = x(2);
+    p.pose.orientation.w = x(3);
+
     pub.publish(p);
 }
 
