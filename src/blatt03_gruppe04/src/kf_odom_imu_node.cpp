@@ -8,8 +8,12 @@
 #include <sensor_msgs/Imu.h>
 
 #include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/TransformStamped.h>
 
 #include <Eigen/Dense>
+
+#include <tf2/transform_datatypes.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 using namespace Eigen;
 /* ros::Time last_imu_time; */
@@ -20,7 +24,7 @@ using namespace Eigen;
 
 nav_msgs::Odometry::ConstPtr last_odom;
 
-ros::Publisher pub;
+ros::Publisher pose_pub, tf_pub;
 
 constexpr int DIMENSION_ZUSTAND = 4; // n
 constexpr int DIMENSION_AKTION = 4; // m
@@ -66,7 +70,6 @@ void kfCallback(const sensor_msgs::Imu::ConstPtr &imu, const nav_msgs::Odometry:
     p.header.frame_id = "world";
     p.header.stamp = imu->header.stamp;
 
-    
     static Matrix<double, DIMENSION_ZUSTAND, 1> x({0,0,0,1});       // Zustand (x,y,qZ,qW)
     Matrix<double, DIMENSION_AKTION, 1> u;                          // Aktion (dx,dy,dqZ,dqW)
     Matrix<double, DIMENSION_MESSUNG, 1> z;                         // Messung (qZ,qW)
@@ -100,15 +103,15 @@ void kfCallback(const sensor_msgs::Imu::ConstPtr &imu, const nav_msgs::Odometry:
     //double dzr = std::fmod(last_odom_eu.yaw - odom_eu.yaw, 2.0*M_PI);
 
     geometry_msgs::Quaternion tmpQ;
-    tmpQ.z = x(3);
-    tmpQ.w = x(4);
+    tmpQ.z = x(2);
+    tmpQ.w = x(3);
 
     EulerAngles x_eu = toEulerAngles(tmpQ);
 
     double odom_delta_t = last_odom->header.stamp.toSec() - odom->header.stamp.toSec();
 
-    u(0) = std::cos(x_eu.yaw) * odom->twist.twist.linear.x * odom_delta_t;
-    u(1) = std::sin(x_eu.yaw) * odom->twist.twist.linear.x * odom_delta_t;
+    u(0) = -std::cos(x_eu.yaw) * odom->twist.twist.linear.x * odom_delta_t;
+    u(1) = -std::sin(x_eu.yaw) * odom->twist.twist.linear.x * odom_delta_t;
     u(2) = last_odom->pose.pose.orientation.z - odom->pose.pose.orientation.z;
     u(3) = last_odom->pose.pose.orientation.w - odom->pose.pose.orientation.w;
 
@@ -146,7 +149,14 @@ void kfCallback(const sensor_msgs::Imu::ConstPtr &imu, const nav_msgs::Odometry:
     p.pose.orientation.z = x(2);
     p.pose.orientation.w = x(3);
 
-    pub.publish(p);
+    geometry_msgs::Transform tfp;
+    tfp.rotation = p.pose.orientation;
+    tfp.translation.x = p.pose.position.x;
+    tfp.translation.y = p.pose.position.y;
+    tfp.translation.z = p.pose.position.z;
+
+    pose_pub.publish(p);
+    tf_pub.publish(tfp);
 }
 
 int main(int argc, char **argv) {
@@ -156,7 +166,8 @@ int main(int argc, char **argv) {
     ros::NodeHandle nh;
 
     // publisher
-    pub = nh.advertise<geometry_msgs::PoseStamped>("/kfPose", 1000);
+    pose_pub = nh.advertise<geometry_msgs::PoseStamped>("/kfPose", 1000);
+    tf_pub = nh.advertise<geometry_msgs::Transform>("/kfTransform", 1000);
 
 
     // subscriber
