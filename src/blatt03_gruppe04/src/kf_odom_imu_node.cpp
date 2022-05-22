@@ -101,9 +101,10 @@ void kfCallback(const sensor_msgs::Imu::ConstPtr &imu, const nav_msgs::Odometry:
 
     ROS_INFO_STREAM(dzr);
 
+    double odom_delta_t = last_odom->header.stamp.toSec() - odom->header.stamp.toSec();
 
-    u(0) = last_odom->pose.pose.position.x - odom->pose.pose.position.x;
-    u(1) = last_odom->pose.pose.position.y - odom->pose.pose.position.y;
+    u(0) = std::cos(dzr) * odom->twist.twist.linear.x * odom_delta_t;
+    u(1) = std::sin(dzr) * odom->twist.twist.linear.x * odom_delta_t;
     u(2) = last_odom->pose.pose.orientation.z - odom->pose.pose.orientation.z;
     u(3) = last_odom->pose.pose.orientation.w - odom->pose.pose.orientation.w;
 
