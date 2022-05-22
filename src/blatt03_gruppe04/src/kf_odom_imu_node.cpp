@@ -94,17 +94,23 @@ void kfCallback(const sensor_msgs::Imu::ConstPtr &imu, const nav_msgs::Odometry:
     z(0) = x(0) + imu->linear_acceleration.x * t*t; */
 
 
-    EulerAngles last_odom_eu = toEulerAngles(last_odom->pose.pose.orientation);
-    EulerAngles odom_eu = toEulerAngles(odom->pose.pose.orientation);
+    //EulerAngles last_odom_eu = toEulerAngles(last_odom->pose.pose.orientation);
+    //EulerAngles odom_eu = toEulerAngles(odom->pose.pose.orientation);
 
-    double dzr = std::fmod(last_odom_eu.yaw - odom_eu.yaw, 2.0*M_PI);
+    //double dzr = std::fmod(last_odom_eu.yaw - odom_eu.yaw, 2.0*M_PI);
 
-    ROS_INFO_STREAM(dzr);
+    geometry_msgs::Quaternion tmpQ;
+    tmpQ.z = x(3);
+    tmpQ.w = x(4);
+
+    EulerAngles x_eu = toEulerAngles(tmpQ);
+
+    ROS_INFO_STREAM(x_eu);
 
     double odom_delta_t = last_odom->header.stamp.toSec() - odom->header.stamp.toSec();
 
-    u(0) = std::cos(dzr) * odom->twist.twist.linear.x * odom_delta_t;
-    u(1) = std::sin(dzr) * odom->twist.twist.linear.x * odom_delta_t;
+    u(0) = std::cos(x_eu.yaw) * odom->twist.twist.linear.x * odom_delta_t;
+    u(1) = std::sin(x_eu.yaw) * odom->twist.twist.linear.x * odom_delta_t;
     u(2) = last_odom->pose.pose.orientation.z - odom->pose.pose.orientation.z;
     u(3) = last_odom->pose.pose.orientation.w - odom->pose.pose.orientation.w;
 
