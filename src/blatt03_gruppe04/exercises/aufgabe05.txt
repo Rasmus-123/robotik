@@ -1,2 +1,0 @@
-Aufgabe 5
-a)  Auf dem Odometrie Topic wird die berechnete Odometrie gepublished, welche die Richtung berechnete x,y-Position, die Orientierung des Roboters, die Lineargeschwindigkeit sowie Winkelgeschwindigkeit beinhaltet. Dies entspricht dabei der Prädiktion.
