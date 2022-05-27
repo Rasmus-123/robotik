@@ -2,10 +2,14 @@
 #include <sensor_msgs/LaserScan.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <sensor_msgs/LaserScan.h>
+#include <sensor_msgs/PointCloud2.h>
 
 #include <tf2_ros/transform_listener.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <tf/transform_listener.h>
 #include <geometry_msgs/TransformStamped.h>
+#include <laser_geometry/laser_geometry.h>
+#include <tf2_sensor_msgs/tf2_sensor_msgs.h>
 
 #include <message_filters/subscriber.h>
 #include <message_filters/synchronizer.h>
@@ -19,36 +23,35 @@ ros::Publisher map_pub;
 void mapCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose, const sensor_msgs::LaserScan::ConstPtr &laser)
 {
 
-    // transform laser with pose
-    geometry_msgs::TransformStamped payload;
-    tf2_ros::Buffer tfBuffer;
-    tf2_ros::TransformListener tfListener(tfBuffer);
-    geometry_msgs::TransformStamped transformStamped;
-    while(ros::ok()) {
-        try {
-            transformStamped = tfBuffer.lookupTransform(pose->header.frame_id, laser->header.frame_id,
-                                ros::Time(0));
-            break;
-        }
-        catch (tf2::TransformException &ex) {
-            ROS_WARN("%s",ex.what());
-            ros::Duration(1.0).sleep();
-            continue;
-        }
+    // laserscan to pointcloud
+    laser_geometry::LaserProjection projector;
+    sensor_msgs::PointCloud2 cloud;
+    projector.projectLaser(*laser, cloud);
+
+/*     // transform pointcloud
+    tf::StampedTransform transform;
+    tf::TransformListener listener;
+    try {
+        listener.lookupTransform(pose->header.frame_id, laser->header.frame_id, ros::Time(0), transform);
     }
+    catch (tf::TransformException ex) {
+        ROS_ERROR("%s", ex.what());
+        ros::Duration(1.0).sleep();
+        return;
+    }
+
+    tf2::doTransform(cloud, cloud, transform); */
+
     
-    sensor_msgs::LaserScan transformedLaser;
-    //tfBuffer.transform(*laser, transformedLaser, pose->header.frame_id);
-    tf2::doTransform(*laser, transformedLaser, transformStamped);
-
-
     // create map
     nav_msgs::OccupancyGrid map;
-    map.info.resolution = 0.1;
-    map.info.width = (transformedLaser.angle_max - transformedLaser.angle_min) / transformedLaser.angle_increment;
-    map.info.height = (transformedLaser.range_max - transformedLaser.range_min) / map.info.resolution;
-    map.info.origin.position.x = -transformedLaser.angle_min;
-    map.info.origin.position.y = -transformedLaser.range_min;
+    map.header.frame_id = pose->header.frame_id;
+    map.header.stamp = pose->header.stamp;
+    map.info.resolution = 0.01;
+    map.info.width = laser->range_max * 2 / map.info.resolution;
+    map.info.height = laser->range_max * 2/ map.info.resolution;
+    map.info.origin.position.x = -laser->range_max;
+    map.info.origin.position.y = -laser->range_max;
     map.info.origin.position.z = 0;
     map.info.origin.orientation.x = 0;
     map.info.origin.orientation.y = 0;
@@ -56,20 +59,21 @@ void mapCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose,
     map.info.origin.orientation.w = 1;
     map.data.resize(map.info.width * map.info.height);
 
-
-
-
-    // fill map
-    for (int i = 0; i < transformedLaser.ranges.size(); i++)
-    {
-        if (transformedLaser.ranges[i] < transformedLaser.range_max && transformedLaser.ranges[i] > transformedLaser.range_min)
-        {
-            // adjust scan data with pose TODO
-            int x = (int)((transformedLaser.ranges[i] - transformedLaser.range_min) / map.info.resolution);
-            int y = (int)((transformedLaser.angle_min + transformedLaser.angle_increment * i) / map.info.resolution);
-            map.data[y * map.info.width + x] = 100;
+    // pointcloud to map
+    float* points = reinterpret_cast<float*>(&cloud.data[0]);
+    for (int i = 0; i < cloud.width; i += 5) {
+        int x = (points[i] - map.info.origin.position.x) / map.info.resolution;
+        ROS_INFO("hi");
+        int y = (points[i + 1] - map.info.origin.position.y) / map.info.resolution;
+        ROS_INFO("hi");
+        if (x < 0 || x > map.info.width || y < 0 || y > map.info.height) {
+            continue;
         }
+        map.data[y * map.info.width + x] = 100;
     }
+
+    // transform map
+    
 
     // publish map
     map_pub.publish(map);
@@ -98,7 +102,7 @@ int main(int argc, char **argv) {
     ros::NodeHandle nh;
 
     // publisher
-    map_pub = nh.advertise<nav_msgs::OccupancyGrid>("odom_est", 1000);
+    map_pub = nh.advertise<nav_msgs::OccupancyGrid>("map", 1000);
 
 
     // subscriber
