@@ -19,7 +19,7 @@ cv::Mat matKernel;
 
 void imageCallback(const sensor_msgs::ImageConstPtr &img) {
     
-    // Try to convert the received image to a cv2 image
+    // konvertiere empfangenes Bild in ein cv2-Bild
     cv_bridge::CvImagePtr cv_ptr;
     try {
         cv_ptr = cv_bridge::toCvCopy(img);
@@ -29,6 +29,7 @@ void imageCallback(const sensor_msgs::ImageConstPtr &img) {
     }
 
     // https://docs.opencv.org/3.4/d4/dbd/tutorial_filter_2d.html
+    // Faltung des Bildes mit CV und dem übergebenen Kernel 
     cv::Mat filtered;
     cv::filter2D(cv_ptr->image, filtered, -1, matKernel, cv::Point(-1, -1), 0, cv::BORDER_DEFAULT);
     cv_bridge::CvImage cv_out(img->header, cv_ptr->encoding, filtered);
@@ -44,6 +45,7 @@ int main(int argc, char **argv) {
 
     image_transport::ImageTransport it(nh);
 
+    // flatKernel ist der Kernel als 1D-Matrix um die Übergabe es Parameters zu vereinfachen
     nh_p.param<std::vector<double>>("kernel", flatKernel, {0,0,0,0,1,0,0,0,0});
     nh_p.param<int>("kernel_rows", rows, 3);
     nh_p.param<int>("kernel_columns", columns, 3);
@@ -52,12 +54,13 @@ int main(int argc, char **argv) {
     nh_p.getParam("kernel_rows", rows);
     nh_p.getParam("kernel_columns", columns);
 
+    // Prüfen, ob der übergebene Kernel die richtige Größe besitzt
     if(flatKernel.size() != rows * columns) {
         ROS_ERROR("invalid kernel size");
         return 0;
     }
 
-    // https://stackoverflow.com/questions/18519647/opencv-convert-vector-of-vector-to-mat
+    // Umwandlung des 1D-Arrays zu einem 2D-Kernel
     matKernel = cv::Mat(rows, columns, CV_64FC1);
     for(int i = 0; i < rows; ++i)
         for(int j = 0; j < columns; ++j)
