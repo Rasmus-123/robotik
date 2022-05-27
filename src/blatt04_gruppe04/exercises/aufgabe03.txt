@@ -1,0 +1,6 @@
+Aufgabe 3
+a)  Der Nachrichtentyp hat einen Header, welche die bereits bekannten Werte wie einen Timestamp oder den Referenzframe enthält.
+    Die Metadaten enthalten die Informationen, wie viele Felder das Grid (width und height) enthält und welche Größe solch eine Zellen in Metern entspricht (resolution). Ebenfalls wird festgelegt, wo und mit welcher Rotation sich der Ursprung der Karte in der echten Welt befindet (origin). Außerdem gibt es auch noch eine Zeit, wann die Karte geladen wurde (map_load_time).
+    Die OccupancyGrid-Nachricht besitzt jetzt noch ein data-Feld, in welchem die eigentlichen Werte eingetragen werden. Die ist dabei ein 1D-Array, in welchem die Zeilen des vorher definierten Grind einfach hintereinander gelegt werden. Dabei entspricht (0,0) dem ersten Punkt und danach sind alle Positionen aufsteigend. Die dort eingetragenen Werte liegen zwischen 0 und 100 und geben die Wahrscheinlichkeit dafür an, wie sicher das Feld belegt ist. -1 beschreibt dabei eine unbekannte Wahrscheinlichkeit.
+
+    TODO

@@ -1,16 +1,17 @@
 Aufgabe 4
-a)  TODO: Der Zustand x_t ist das hier beschriebene μ_t. Somit wird dieser durch den vorherigen Zustand x_{t-1}
-    Es wird angenommen, dass die Wahrscheinlich von x_t normalverteilt ist.
+a)  Der Zustand x_t ist das hier beschriebene μ_t. Dies ist ein Vektor, welcher den Zustandsraum zum Zeitpunkt t beschreibt. Dieser setzt sich zusammen aus der Prädiktion mit dem letztens Zustand und der Aktion, sowie der durch den Kalman-Gain gewichteten Messung.
+    Beim Kalman-Filter wird angenommen, dass es sich um unimodale Verteilungen handelt
 
-b)  TODO: A beschreibt das Transitionsmodell. Wenn also irgendwelche spontanen Transitionen bei jedem Zeitschritt auftreten (können?), so wird das mit dieser Matrix modelliert. Liegen keine Transitionen vor, so ist diese Matrix einfach die Einheitsmatrix (in der Größe von μ bzw. x)
-    B ist eine Matrix, welche die Aktion u in den gleichen Raum wie den Zustand umwandelt
-    H ist eine Matrix, welche den Zustand x in den gleichen Raum wie die Messung umwandelt
+b)  A beschreibt das Transitionsmodell. Wenn also spontane Transitionen bei jedem Zeitschritt auftreten, so wird dies mit dieser Matrix modelliert. Liegen keine solchen Transitionen vor, so ist diese Matrix die Einheitsmatrix (in der Größe von μ bzw. x)
+    B ist eine Matrix (in der Größe Zustand X Aktion), welche die Aktion u in den gleichen Raum wie den Zustand umwandelt
+    H ist eine Matrix (in der Größe Messung X Zustand), welche den Zustand x in den gleichen Raum wie die Messung umwandelt
 
-    Dabei könnten durch die Matrizen z. B. Aktionen wie Umwandlung der Einheiten oder Tauschen der Einträge stattfinden
+    Dabei könnten durch die Matrizen z. B. auch das Umwandeln der Einheiten oder das Tauschen der Einträge stattfinden
 
-c)  TODO: Σ_{t+1} ist der Kalman-Gain. Mit diesem wird abgebildet, wie stark die Messung gewichtet wird.
+c)  K_{t+1} ist der Kalman-Gain. Mit diesem wird abgebildet, wie stark die Messung gewichtet wird und hat Einfluss auf die Kovarianz des korrigierten Zustandes.
+    Der Kalman-Gain bestimmt sich aus den verschiedenen Kovarianzen.
 
-d)  a. Der Prädiktion wird hier stärker vertraut als der Messung. Daher liegt die Korrektur näher an der Prädiktion und es könnte aus einem 1D-Kalman-Filter stammen
-    b. Der Messung wird hier stärker vertraut als der Prädiktion. Daher liegt die Korrektur ein bisschen näher an der Messung und es könnte aus einem 1D-Kalman-Filter stammen
-    c. Die Korrektur sollte eigentlich einen geringeren Sigma-Wert haben als je die Prädiktion oder die Messung, was hier aber nicht gegeben ist. Daher stammt dieses Bild nicht aus einem 1D-Kalman-Filter
-    d. Der Messung wird hier stärker vertraut als der Prädiktion. Daher liegt die Korrektur ein bisschen näher an der Messung und es könnte aus einem 1D-Kalman-Filter stammen
+d)  a. Die Prädiktion hat eine geringere Kovarianz als die Messung. Daher liegt die Korrektur näher an der Prädiktion. Ebenfalls ist die Kovarianz der Korrektur geringer als die von der Prädiktion und der Messung, daher könnte aus einem 1D-Kalman-Filter stammen
+    b. Die Messung hat eine geringfügig geringere Kovarianz als die Prädiktion. Daher liegt die Korrektur ein bisschen näher an der Messung und es könnte aus einem 1D-Kalman-Filter stammen
+    c. Die Korrektur sollte eigentlich eine geringere Kovarianz haben als je die Prädiktion oder die Messung und somit stärker gestreckt sein als die Prädiktion und die Messung, was hier aber nicht gegeben ist. Daher stammt dieses Bild nicht aus einem 1D-Kalman-Filter
+    d. Die Messung hat eine geringere Kovarianz als die Prädiktion. Daher liegt die Korrektur ein bisschen näher an der Messung und es könnte aus einem 1D-Kalman-Filter stammen

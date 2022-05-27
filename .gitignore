@@ -9,3 +9,4 @@ src/epos2_motor_controller
 src/sick_tim
 src/uos_tools
 src/volksbot_driver
+src/robot_pose_ekf
