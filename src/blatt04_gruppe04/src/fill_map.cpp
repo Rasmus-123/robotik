@@ -28,35 +28,39 @@ void mapCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose,
     sensor_msgs::PointCloud2 cloud;
     projector.projectLaser(*laser, cloud);
 
-/*     // transform pointcloud
-    tf::StampedTransform transform;
-    tf::TransformListener listener;
-    try {
-        listener.lookupTransform(pose->header.frame_id, laser->header.frame_id, ros::Time(0), transform);
-    }
-    catch (tf::TransformException ex) {
-        ROS_ERROR("%s", ex.what());
-        ros::Duration(1.0).sleep();
-        return;
+    // transform laserscan with pose
+    tf2_ros::Buffer tfBuffer;
+    tf2_ros::TransformListener tfListener(tfBuffer);
+    geometry_msgs::TransformStamped transformStamped;
+    while(ros::ok()) {
+        try {
+            transformStamped = tfBuffer.lookupTransform("odom_combined", cloud.header.frame_id, ros::Time(0));
+            break;
+        }
+        catch (tf2::TransformException &ex) {
+            ROS_WARN("%s",ex.what());
+            ros::Duration(1.0).sleep();
+            continue;
+        }
     }
 
-    tf2::doTransform(cloud, cloud, transform); */
-
-    
+    tf2::doTransform(cloud, cloud, transformStamped);
+   
     // create map
     nav_msgs::OccupancyGrid map;
-    map.header.frame_id = pose->header.frame_id;
-    map.header.stamp = pose->header.stamp;
-    map.info.resolution = 0.01;
+    map.header.frame_id = "base_link";
+    map.header.stamp = cloud.header.stamp;
+    map.info.resolution = 0.1;
     map.info.width = laser->range_max * 2 / map.info.resolution;
     map.info.height = laser->range_max * 2/ map.info.resolution;
-    map.info.origin.position.x = -laser->range_max;
-    map.info.origin.position.y = -laser->range_max;
-    map.info.origin.position.z = 0;
+    map.info.origin.position.x = pose->pose.pose.position.x - laser->range_max;
+    map.info.origin.position.y = pose->pose.pose.position.y - laser->range_max;
+    map.info.origin.position.z = pose->pose.pose.position.z;
     map.info.origin.orientation.x = 0;
     map.info.origin.orientation.y = 0;
     map.info.origin.orientation.z = 0;
     map.info.origin.orientation.w = 1;
+    // tf::quaternionTFToMsg(tf::createQuaternionFromRPY(0, 0, 90), map.info.origin.orientation);
     map.data.resize(map.info.width * map.info.height);
 
     // pointcloud to map
@@ -72,28 +76,9 @@ void mapCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose,
         map.data[y * map.info.width + x] = 100;
     }
 
-    // transform map
-    
-
     // publish map
     map_pub.publish(map);
 }
-
-/* void mapCallback(const geometry_msgs::PoseWithCovarianceStamped::Ptr &pose, sensor_msgs::LaserScan::Ptr &laser) {
-
-    // get pose
-    float x = pose->pose.pose.position.x;
-    float y = pose->pose.pose.position.y;
-    float theta = tf::getYaw(pose->pose.pose.orientation);
-
-    // transform laserscan
-    for (int i = 0; i < ranges_size; i++)
-    {
-        float x_new = x + ranges[i] * cos(angle_min + angle_increment * i + theta);
-        float y_new = y + ranges[i] * sin(angle_min + angle_increment * i + theta);
-    }
-
-} */
 
 int main(int argc, char **argv) {
 
