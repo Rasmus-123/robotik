@@ -1,0 +1,12 @@
+# Aufgabe 4: Scan Matching - Theorie
+
+## a)
+
+## b)
+
+## c)
+
+Lokalisierung an Linien wäre ein alternativer Ansatz, damit werden anstelle von Punktemengen Linienmengen verglichen.  
+Dies macht aber nur Sinn, wenn die zu vergleichenden Daten auch deutliche(?) Linien enthalten.
+
+## d)
