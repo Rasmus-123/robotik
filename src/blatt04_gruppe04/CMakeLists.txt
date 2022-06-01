@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_geometry_msgs
   laser_geometry
   tf2_sensor_msgs
+  visualization_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -213,3 +214,6 @@ include_directories(
 
 add_executable(fill_map src/fill_map.cpp)
 target_link_libraries(fill_map ${catkin_LIBRARIES})
+
+add_executable(icp_scan_matching src/icp_scan_matching.cpp)
+target_link_libraries(icp_scan_matching ${catkin_LIBRARIES})
