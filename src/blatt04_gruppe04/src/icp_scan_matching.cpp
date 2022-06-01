@@ -20,7 +20,7 @@ ros::Publisher pub_marker;
 
 void scanCallback(const sensor_msgs::LaserScanConstPtr& model, const sensor_msgs::LaserScan& scan)
 {
-    
+
 }
 
 
@@ -42,4 +42,8 @@ int main(int argc, char** argv)
     typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::LaserScan, sensor_msgs::LaserScan> MySyncPolicy;
     message_filters::Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), sub_model, sub_scan);
     sync.registerCallback(boost::bind(&scanCallback, _1, _2));
+
+    ros::spin();
+
+    return 0;
 }
