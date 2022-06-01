@@ -2,6 +2,9 @@
 
 ## a)
 
+Sinnvolle Messungen und Schätzungen für die Karte, die Pose und den Laserscan.
+(? und Details)
+
 ## b)
 
 ## c)
@@ -10,3 +13,5 @@ Lokalisierung an Linien wäre ein alternativer Ansatz, damit werden anstelle von
 Dies macht aber nur Sinn, wenn die zu vergleichenden Daten auch deutliche(?) Linien enthalten.
 
 ## d)
+
+Reduktionsfilter wie der Medianfilter, der die Anzahl an Messpunkten verringert.
