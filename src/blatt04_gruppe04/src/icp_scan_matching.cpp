@@ -105,6 +105,7 @@ std::vector<geometry_msgs::Point32> CloudToListOfPoints(const sensor_msgs::Point
 
 void scanCallback(const sensor_msgs::LaserScanConstPtr& model, const sensor_msgs::LaserScanConstPtr& scan)
 {
+    // https://wiki.ros.org/laser_geometry
     // Simple Projection (for now?)
     // Ist in rviz identisch zum Laser-Scan, scheint also so zu reichen
     sensor_msgs::PointCloud2 cloud_model;
@@ -115,14 +116,8 @@ void scanCallback(const sensor_msgs::LaserScanConstPtr& model, const sensor_msgs
     std::vector<geometry_msgs::Point32> points_model = CloudToListOfPoints(cloud_model);
     std::vector<geometry_msgs::Point32> points_scan = CloudToListOfPoints(cloud_scan);
 
-    sensor_msgs::PointCloud2 test_cloud_model = test(points_model);
-    test_cloud_model.header = cloud_model.header;
-
-    pub_cloud1.publish(cloud_model);
-    // pub_cloud2.publish(cloud_scan);
-    return;
-
     
+
     visualization_msgs::Marker mark;
 
     mark.header = model->header;
