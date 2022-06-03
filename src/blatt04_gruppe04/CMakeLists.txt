@@ -217,3 +217,6 @@ target_link_libraries(fill_map ${catkin_LIBRARIES})
 
 add_executable(icp_scan_matching src/icp_scan_matching.cpp)
 target_link_libraries(icp_scan_matching ${catkin_LIBRARIES})
+
+add_executable(icp_matcher src/icp_matcher.cpp)
+target_link_libraries(icp_matcher ${catkin_LIBRARIES})
