@@ -213,3 +213,6 @@ include_directories(
 
 add_executable(fill_map src/fill_map.cpp)
 target_link_libraries(fill_map ${catkin_LIBRARIES})
+
+add_executable(icp_matcher src/icp_matcher.cpp)
+target_link_libraries(icp_matcher ${catkin_LIBRARIES})
