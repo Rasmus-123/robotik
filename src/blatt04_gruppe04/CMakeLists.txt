@@ -17,8 +17,10 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_geometry_msgs
   laser_geometry
   tf2_sensor_msgs
-  visualization_msgs
+  pcl_ros
 )
+
+find_package(Eigen3 REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -215,5 +217,11 @@ include_directories(
 add_executable(fill_map src/fill_map.cpp)
 target_link_libraries(fill_map ${catkin_LIBRARIES})
 
-add_executable(icp_scan_matching src/icp_scan_matching.cpp)
-target_link_libraries(icp_scan_matching ${catkin_LIBRARIES})
+add_executable(icp_matcher src/icp_matcher.cpp)
+target_link_libraries(icp_matcher ${catkin_LIBRARIES})
+
+add_executable(icp_iterator src/icp_iterator.cpp)
+target_link_libraries(icp_iterator ${catkin_LIBRARIES} Eigen3::Eigen)
+
+add_executable(icp_c src/icp_c.cpp)
+target_link_libraries(icp_c ${catkin_LIBRARIES} Eigen3::Eigen)

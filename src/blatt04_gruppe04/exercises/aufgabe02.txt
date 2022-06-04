@@ -1,7 +1,8 @@
 Aufgabe 2
-a)  Rasterkarten sind eine flexible Darstellung der Umgebung die es ermöglicht, die Umgebung durch (beliebig genaue) Aufteilungen darzustellen. Dies ist sehr von Nutzen, wenn ein Roboter sich in einem schon zuvor bestimmten Gebiet orientieren soll.
+a)  Rasterkarten sind eine flexible Darstellung der Umgebung die es ermöglicht, die Umgebung durch (beliebig genaue) Aufteilungen darzustellen. Dies ist von großem Nutzen, wenn ein Roboter sich in einem schon zuvor bestimmten Gebiet orientieren soll.
+Des Weiteren sind Rasterkarten automatisch durch Messdaten, wie etwa Laserscans, erstellbar und durch die Organisation in Quad- oder Octrees speichereffizient, wodurch sie flexibel einsetzbar sind.
 
 b)  Interpretiert man die "freien" Punkte auf der Rasterkarte als Knoten eines Graphen, so lassen sich darauf bekannte Wegfinde-Algorithmen anwenden und somit z. B. der kürzeste Weg von Punkt A nach Punkt B finden.
-    Außerdem kann ein Roboter seine eigenen Scans durchführen und diese recht einfach in eine Rasterkarte umwandeln. Matched dieser seine selbst erstellte Karte nun auf eine vorgegebene Karte, so kann dieser seine absolute Position bestimmen.
+    Außerdem kann ein Roboter seine eigenen Scans durchführen und diese recht einfach in eine Rasterkarte umwandeln und mit inkrementellen Verfahren so eine fortlaufende Karte erstellen. Matched dieser seine selbst erstellte Karte nun auf eine vorgegebene Karte, so kann dieser seine absolute Position bestimmen.
 
-c)  Möchte man sich nun nicht nur im Freiraum orientieren, sondern auch Gegenstände bestimmen/lokalisieren, so sind semantische Karten von Nutzen. Gibt man einem Roboter z. B. die Aufgabe, dass er eine Flasche holen soll, so benötigt wieder die Information, an welcher Stelle sich ein Objekt mit der Eigenschaft "Flasche" befindet. Genau dies wird in einer semantischen Karte aufgefasst.
+c)  Möchte man sich nun nicht nur im Freiraum orientieren, sondern auch Gegenstände bestimmen/lokalisieren, so sind semantische Karten von Nutzen. Gibt man einem Roboter z. B. die Aufgabe, dass er eine Flasche holen soll, so benötigt er die Information, an welcher Stelle sich ein Objekt mit der Eigenschaft "Flasche" befindet. Genau dies wird in einer semantischen Karte aufgefasst.
