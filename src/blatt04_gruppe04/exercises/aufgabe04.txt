@@ -1,9 +1,0 @@
-Aufgabe 4
-
-a)
-
-b)  ICP matched immer mit dem nächsten Nachbarn. Hat ICP nun schon recht gutes Ergebnis gefunden und würde der nächste Nachbar das Ergebnis nur verschlechtern, so wird dieser nicht weiter betrachtet. Würde allerdings der zweit nächste Punkt das Ergebnis verbessern, so wird dieses verbesserte Ergebnis nie gefunden.
-
-c)  Man könnte zum Beispiel mit Linien und/oder markanten Eigenschaften matchen. So könnte man z. B. einen Linienfilter auf den Scan anwenden und dann die dabei entstandenen Linien matchen. Ebenso könnte man Eigenschaften im Scan (wie auch z. B. durch Linien entstandenen Ecken) matchen und damit die Korrespondenzen ermitteln.
-
-d)  Da ein Scan häufig Rauschen enthält, so könnte man zuerst einen Filter wie z. B. den Medianfilter anwenden um dieses zu minimieren. Oder wie bereits in der Aufgabe zuvor beschrieben, lässt sich ein Linienfilter anwenden um eine etwas andere Ausführen von ICP zu erhalten

@@ -25,12 +25,12 @@ geometry_msgs::Point toGP(float x, float y, float z) {
     return tp;
 }
 
-std::vector<geometry_msgs::Point> laserScanToPointVector(const sensor_msgs::LaserScan::ConstPtr& scan)
+std::vector<geometry_msgs::Point> laserScanToPointVector(sensor_msgs::LaserScan& scan)
 {
     // converts the laser scan to a PointCloud2
     laser_geometry::LaserProjection projector;
     sensor_msgs::PointCloud2 cloud;
-    projector.projectLaser(*scan, cloud);
+    projector.projectLaser(scan, cloud);
 
     // reinterpret byte memory as float memory
     float* point_array_ptr = reinterpret_cast<float*>(&cloud.data[0]);
@@ -45,6 +45,7 @@ std::vector<geometry_msgs::Point> laserScanToPointVector(const sensor_msgs::Lase
 
     return points;
 }
+
 
 std::vector<std::pair<geometry_msgs::Point, geometry_msgs::Point>> findCorrespondences(const std::vector<geometry_msgs::Point>& scan_points, const std::vector<geometry_msgs::Point>& model_points)
 {
@@ -74,19 +75,14 @@ std::vector<std::pair<geometry_msgs::Point, geometry_msgs::Point>> findCorrespon
     return pairs;
 }
 
-
 // given two laserscans finds the calculates the icp transformation and outputs it on the console
-void icpCallback(const sensor_msgs::LaserScan::ConstPtr &model, const sensor_msgs::LaserScan::ConstPtr &scan) {
+Eigen::Matrix<double, 3, 1> icp(sensor_msgs::LaserScan &model, sensor_msgs::LaserScan &scan) {
     std::vector<geometry_msgs::Point> model_points = laserScanToPointVector(model);
     std::vector<geometry_msgs::Point> scan_points = laserScanToPointVector(scan);
 
 
-    static tf::TransformBroadcaster br;
-
     Eigen::Matrix<double, 3, 1> T = Eigen::Matrix<double, 3, 1>::Zero();
     Eigen::Matrix<double, 3, 1> deltaT;
-
-    ros::Rate rate(0.25);
 
     // while
     do { 
@@ -97,7 +93,7 @@ void icpCallback(const sensor_msgs::LaserScan::ConstPtr &model, const sensor_msg
         
         if (pairs.size() <= 0) {
             ROS_INFO("No Pairs found!");
-            return;
+            return T;
         }
 
         float scanCenterOfMass[3] = {0, 0, 0};
@@ -111,9 +107,6 @@ void icpCallback(const sensor_msgs::LaserScan::ConstPtr &model, const sensor_msg
             modelCenterOfMass[1] += pair.second.y;
             modelCenterOfMass[2] += pair.second.z;
         }
-
-        ROS_INFO_STREAM("pairs: " << pairs.size());
-
 
         scanCenterOfMass[0] /= pairs.size();     // c'x | Scan
         scanCenterOfMass[1] /= pairs.size();     // c'y
@@ -166,8 +159,6 @@ void icpCallback(const sensor_msgs::LaserScan::ConstPtr &model, const sensor_msg
             p.z = pM(2);        
         }
 
-        ROS_INFO_STREAM("T: (" << T(0) << ", " << T(1) << ", " << T(2) << ")");
-
         // calculate error
         float error = 0;
         for(auto& p : pairs) {
@@ -179,14 +170,23 @@ void icpCallback(const sensor_msgs::LaserScan::ConstPtr &model, const sensor_msg
             error += (modelPointMatrix - scanPointMatrix).array().abs().sum();
         }
 
-        ROS_INFO_STREAM("Error: " << error);
-        ROS_INFO_STREAM("deltaT.Abs: " << deltaT.array().abs().sum());
-        std::cout << " --- " << std::endl;
+    } while(deltaT.array().abs().sum() > 0.01);
 
+    return T;
+}
+
+
+void scanCallback(const sensor_msgs::LaserScan::ConstPtr &scan) {
+    static sensor_msgs::LaserScan prev_scan;
+    if(!prev_scan.header.frame_id.empty()) {
+        sensor_msgs::LaserScan scanK = *scan;
+        auto T = icp(prev_scan, scanK);
 
         // publish Transformation
 
         // https://wiki.ros.org/tf/Tutorials/Writing%20a%20tf%20broadcaster%20%28C%2B%2B%29
+
+        static tf::TransformBroadcaster br;
 
         tf::Transform transform;
         transform.setOrigin( tf::Vector3(T(0), T(1), 0.0) );
@@ -194,22 +194,18 @@ void icpCallback(const sensor_msgs::LaserScan::ConstPtr &model, const sensor_msg
         q.setRPY(0, 0, T(2));
         transform.setRotation(q);
 
-        // Da der https://wiki.ros.org/tf#static_transform_publisher frame_id="model" und child_frame_id="laser"
-        tf::StampedTransform stamped(transform, scan->header.stamp, model->header.frame_id, scan->header.frame_id);
+        tf::StampedTransform stamped(transform, scan->header.stamp, prev_scan.header.frame_id, scan->header.frame_id);
 
         br.sendTransform(stamped);
 
-        rate.sleep();
-
-    } while(deltaT.array().abs().sum() > 0.01);
-
-    ROS_INFO("Hallo nach dem Loop!");
-
+    }
+    prev_scan = *scan;
 }
+
 
 int main(int argc, char **argv) {
 
-    ros::init(argc, argv, "icp_iterator");
+    ros::init(argc, argv, "icp_c");
 
     ros::NodeHandle nh;
 
@@ -218,12 +214,7 @@ int main(int argc, char **argv) {
 
 
     // subscriber
-    message_filters::Subscriber<sensor_msgs::LaserScan> model_sub(nh, "/model", 1000);
-    message_filters::Subscriber<sensor_msgs::LaserScan> scan_sub(nh, "/scan", 1000);
-
-    typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::LaserScan, sensor_msgs::LaserScan> MySyncPolicy;
-    message_filters::Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), model_sub, scan_sub);
-    sync.registerCallback(boost::bind(&icpCallback, _1, _2));
+    ros::Subscriber sub = nh.subscribe("/scan", 1000, scanCallback);
 
     ros::spin();
 

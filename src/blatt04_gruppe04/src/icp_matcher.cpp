@@ -11,6 +11,8 @@
 
 ros::Publisher marker_pub;
 
+constexpr float epsilon = 0.4;
+
 
 // given two laserscans finds the nerarest point in the second laserscan to the first laserscan and publish these relations as line list markers
 void matcherCallback(const sensor_msgs::LaserScan::ConstPtr &model, const sensor_msgs::LaserScan::ConstPtr &scan) {
@@ -22,7 +24,6 @@ void matcherCallback(const sensor_msgs::LaserScan::ConstPtr &model, const sensor
     marker.type = visualization_msgs::Marker::LINE_LIST;
     marker.action = visualization_msgs::Marker::ADD;
     marker.scale.x = 0.01;
-    //marker.scale.y = 0.1;
 
     marker.pose.orientation.w = 1.0;
 
@@ -38,12 +39,16 @@ void matcherCallback(const sensor_msgs::LaserScan::ConstPtr &model, const sensor
     sensor_msgs::PointCloud2 scanCloud;
     projector.projectLaser(*scan, scanCloud);
 
-    // nearest neighbor search for two point clouds
 
     // reinterpret byte memory as float memory
     float* modelPoints = reinterpret_cast<float*>(&modelCloud.data[0]);
     float* scanPoints = reinterpret_cast<float*>(&scanCloud.data[0]);
+
+    // the points in the created point cloud now contain an x, y, z coordinate and an index. All of them are stored as a float32
+        // the scan from the simulating would have 5 values: x, y, z, index, intensity
+    // this is why we are always only accessing the first three values of the point inside the recasted array and the next point starts after 4 floats
     
+    // nearest neighbor search for two point clouds
     for(int j = 0; j < scanCloud.width; j++) {
         int index = -1;
         float minDist = std::numeric_limits<float>::max();
@@ -56,11 +61,8 @@ void matcherCallback(const sensor_msgs::LaserScan::ConstPtr &model, const sensor
                 index = i;
             }
         }
-        ROS_INFO_STREAM ("minDist: " << minDist);
-        if(index != -1 && minDist < 999) {
-/*             marker.points.push_back(toGP(modelPoints[i*4], modelPoints[i*4+1], modelPoints[i*4+2]));
-            marker.points.push_back(toGP(scanPoints[index*4], scanPoints[index*4+1], scanPoints[index*4+2])); */
         
+        if(index != -1 && minDist < epsilon) {
             geometry_msgs::Point scanPoint;
             geometry_msgs::Point modelPoint;
 

@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_geometry_msgs
   laser_geometry
   tf2_sensor_msgs
+  pcl_ros
 )
 
 find_package(Eigen3 REQUIRED)
@@ -221,3 +222,6 @@ target_link_libraries(icp_matcher ${catkin_LIBRARIES})
 
 add_executable(icp_iterator src/icp_iterator.cpp)
 target_link_libraries(icp_iterator ${catkin_LIBRARIES} Eigen3::Eigen)
+
+add_executable(icp_c src/icp_c.cpp)
+target_link_libraries(icp_c ${catkin_LIBRARIES} Eigen3::Eigen)
