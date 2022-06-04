@@ -16,6 +16,8 @@
 #include <sensor_msgs/PointCloud2.h>
 #include <laser_geometry/laser_geometry.h>
 
+#include <utility>
+
 // --- --- --- //
 
 ros::Publisher pub_marker;
@@ -25,54 +27,10 @@ ros::Publisher pub_cloud2;
 
 laser_geometry::LaserProjection laser_projector;
 
-sensor_msgs::PointCloud2 test(const std::vector<geometry_msgs::Point32>& points) 
+inline double PointDistance(const geometry_msgs::Point32& p1, const geometry_msgs::Point32& p2)
 {
-    sensor_msgs::PointCloud2 payload;
-
-    // describe the bytes
-    sensor_msgs::PointField field_x;
-    field_x.name = "x";
-    field_x.offset = 0 * sizeof(float);
-    field_x.datatype = sensor_msgs::PointField::FLOAT32;
-    field_x.count = 1;
-
-    sensor_msgs::PointField field_y;
-    field_y.name = "y";
-    field_y.offset = 1 * sizeof(float);
-    field_y.datatype = sensor_msgs::PointField::FLOAT32;
-    field_y.count = 1;
-
-    sensor_msgs::PointField field_z;
-    field_z.name = "z";
-    field_z.offset = 2 * sizeof(float);
-    field_z.datatype = sensor_msgs::PointField::FLOAT32;
-    field_z.count = 1;
-
-    payload.fields.push_back(field_x);
-    payload.fields.push_back(field_y);
-    payload.fields.push_back(field_z);
-
-    payload.point_step = 3 * sizeof(float);
-
-    payload.width = points.size();
-    payload.height = 1;
-    payload.row_step = payload.width * payload.point_step;
-    payload.data.resize(payload.row_step * payload.height);
-
-    // reinterpret byte memory as float memory
-    float* data_raw = reinterpret_cast<float*>(&payload.data[0]);
-
-    for(int i = 0; i < points.size(); i++) 
-    {
-        data_raw[i*3] = points[i].x;
-        data_raw[i*3 + 1] = points[i].y;
-        data_raw[i*3 + 2] = points[i].z;
-    }
-
-    return payload;
+    return std::sqrt(std::pow(p2.x - p1.x, 2) + std::pow(p2.y - p1.y, 2) + std::pow(p2.z - p1.z, 2));
 }
-
-
 
 std::vector<geometry_msgs::Point32> CloudToListOfPoints(const sensor_msgs::PointCloud2& cloud)
 {
@@ -116,31 +74,60 @@ void scanCallback(const sensor_msgs::LaserScanConstPtr& model, const sensor_msgs
     std::vector<geometry_msgs::Point32> points_model = CloudToListOfPoints(cloud_model);
     std::vector<geometry_msgs::Point32> points_scan = CloudToListOfPoints(cloud_scan);
 
+    std::vector<std::pair<geometry_msgs::Point32, geometry_msgs::Point32>> lines;
+
+    double max_distance = 2.0; // Epsilon?
+    for (const auto &p : points_scan)
+    {
+        double current_dist = max_distance;
+        geometry_msgs::Point32 current_point;
+        bool isset = false;
+
+        for (const auto& model_p : points_model)
+        {
+            if (PointDistance(p, model_p) <= current_dist)
+            {
+                current_dist = PointDistance(p, model_p);
+                current_point = model_p;
+                isset = true;
+            }
+        }
+        
+        if (isset)
+        {
+            lines.push_back(std::make_pair(p, current_point));
+        }
+    }
+
+    std::cout << lines.size() << " Pairs found!" << std::endl;
     
 
     visualization_msgs::Marker mark;
 
     mark.header = model->header;
-    mark.id = 0;
-
+    mark.id = 1;
     mark.type = visualization_msgs::Marker::LINE_LIST;
     mark.action = visualization_msgs::Marker::ADD;
-
-    mark.scale.x = 1.0;
-    mark.scale.y = 1.0;
-    mark.scale.z = 1.0;
-    mark.scale.z = 1.0;
-
+    mark.scale.x = 0.01;
     mark.color.a = 1.0;
     mark.color.r = 1.0;
-    mark.color.g = 0.0;
-    mark.color.b = 0.0;
+    mark.pose.orientation.w = 1.0;
 
-    // for irgendwas
-    // {
-    //      mark.points.push_back() Linie-Start
-    //      mark.points.push_back() Linie-Ende
-    // }
+    for (const auto& pair : lines)
+    {
+        // Kann man Point32 nicht einfacher in Point (64) umwandeln?
+        geometry_msgs::Point p1;
+        p1.x = pair.first.x;
+        p1.y = pair.first.y;
+        p1.z = pair.first.z;
+        geometry_msgs::Point p2;
+        p2.x = pair.second.x;
+        p2.y = pair.second.y;
+        p2.z = pair.second.z;
+
+        mark.points.push_back(p1); //Linie-Start
+        mark.points.push_back(p2); //Linie-Ende
+    }
 
     pub_marker.publish(mark);
 }
