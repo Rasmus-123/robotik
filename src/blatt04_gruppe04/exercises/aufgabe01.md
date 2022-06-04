@@ -38,8 +38,6 @@ $Bel(R_2) = \frac{621 / 1100}{(621 / 1100) + (41 / 550)} = \frac{621}{703}$
 
 $Bel(\neg R_2) = \frac{41 / 550}{(621 / 1100) + (41 / 550)} = \frac{82}{703}$
 
----
-
 ## e)
 
 Mit normierten $Bel(R_2)$ und $Bel(\neg R_2)$ aus d).
@@ -81,8 +79,6 @@ $Bel(R_4) = \frac{2735829 / 4621100}{(2735829 / 4621100) + (158129 / 2310550)} =
 $Bel(\neg R_4) = \frac{158129 / 2310550}{(2735829 / 4621100) + (158129 / 2310550)} = \frac{316258}{3052087} \approx 0.10$
 
 Trägt der Direktor jeden Tag einen Regenschirm bei sich. konvergiert die Wahrscheinlichkeiten für Regen gegen 0.9 und die für Nicht-Regen gegen 0.1.
-
----
 
 ## f)
 
