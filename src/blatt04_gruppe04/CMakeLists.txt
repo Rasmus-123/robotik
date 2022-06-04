@@ -19,6 +19,8 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_sensor_msgs
 )
 
+find_package(Eigen3 REQUIRED)
+
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -216,3 +218,6 @@ target_link_libraries(fill_map ${catkin_LIBRARIES})
 
 add_executable(icp_matcher src/icp_matcher.cpp)
 target_link_libraries(icp_matcher ${catkin_LIBRARIES})
+
+add_executable(icp_iterator src/icp_iterator.cpp)
+target_link_libraries(icp_iterator ${catkin_LIBRARIES} Eigen3::Eigen)

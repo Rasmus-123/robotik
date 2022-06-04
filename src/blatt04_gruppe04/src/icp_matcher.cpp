@@ -10,15 +10,7 @@
 
 
 ros::Publisher marker_pub;
-ros::Publisher test_pub;
 
-// generate random float between two values
-float randomFloat(float a, float b) {
-    float random = ((float) rand()) / (float) RAND_MAX;
-    float diff = b - a;
-    float r = random * diff;
-    return a + r;
-}
 
 // given two laserscans finds the nerarest point in the second laserscan to the first laserscan and publish these relations as line list markers
 void matcherCallback(const sensor_msgs::LaserScan::ConstPtr &model, const sensor_msgs::LaserScan::ConstPtr &scan) {
@@ -46,37 +38,35 @@ void matcherCallback(const sensor_msgs::LaserScan::ConstPtr &model, const sensor
     sensor_msgs::PointCloud2 scanCloud;
     projector.projectLaser(*scan, scanCloud);
 
-    test_pub.publish(scanCloud);
-
     // nearest neighbor search for two point clouds
 
     // reinterpret byte memory as float memory
     float* modelPoints = reinterpret_cast<float*>(&modelCloud.data[0]);
     float* scanPoints = reinterpret_cast<float*>(&scanCloud.data[0]);
-    ROS_INFO_STREAM ("modelCloud.data.size: " << modelCloud.data.size());
-    for(int i = 0; i < modelCloud.width; i++) {
+    
+    for(int j = 0; j < scanCloud.width; j++) {
         int index = -1;
         float minDist = std::numeric_limits<float>::max();
         
-        for(int j = 0; j < scanCloud.width; j++) {
+        for(int i = 0; i < modelCloud.width; i++) {
             // euclidean distance
             float dist = sqrt(pow(modelPoints[i*4] - scanPoints[j*4], 2) + pow(modelPoints[i*4+1] - scanPoints[j*4+1], 2) + pow(modelPoints[i*4+2] - scanPoints[j*4+2], 2));
             if(dist < minDist) {
                 minDist = dist;
-                index = j;
+                index = i;
             }
         }
         ROS_INFO_STREAM ("minDist: " << minDist);
-        if(index != -1 && minDist < 0.4) {
+        if(index != -1 && minDist < 999) {
 /*             marker.points.push_back(toGP(modelPoints[i*4], modelPoints[i*4+1], modelPoints[i*4+2]));
             marker.points.push_back(toGP(scanPoints[index*4], scanPoints[index*4+1], scanPoints[index*4+2])); */
         
             geometry_msgs::Point scanPoint;
             geometry_msgs::Point modelPoint;
 
-            scanPoint.x = scanPoints[i*4];
-            scanPoint.y = scanPoints[i*4+1];
-            scanPoint.z = scanPoints[i*4+2];
+            scanPoint.x = scanPoints[j*4];
+            scanPoint.y = scanPoints[j*4+1];
+            scanPoint.z = scanPoints[j*4+2];
 
             modelPoint.x = modelPoints[index*4];
             modelPoint.y = modelPoints[index*4+1];
@@ -100,7 +90,6 @@ int main(int argc, char **argv) {
 
     // publisher
     marker_pub = nh.advertise<visualization_msgs::Marker>("ref_lines", 1000);
-    test_pub = nh.advertise<sensor_msgs::PointCloud2>("test", 1000);
 
 
     // subscriber
