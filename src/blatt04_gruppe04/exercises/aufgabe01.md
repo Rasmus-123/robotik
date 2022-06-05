@@ -50,15 +50,17 @@ $\overline{Bel}(\neg R_3) = P(\neg R_3 | R_2) \cdot Bel(R_2) + P(\neg R_3 | \neg
 
 Beobachteter Regenschirm:
 
-$Bel(R_3) = P(u_3 | R_3) \cdot \overline{Bel}(R_3) = 0.9 \cdot \frac{4593}{7030} = \frac{41337}{70300}$
+$Bel(R_3) = P(u_3 | R_3) \cdot \overline{Bel}(R_3) = 0.9 \cdot \frac{4593}{7030} = \frac{41337}{70300} \approx 0.59$
 
-$Bel(\neg R_3) = P(u_3 | \neg R_3) \cdot \overline{Bel}(\neg R_3) = 0.2 \cdot \frac{2437}{7030} = \frac{2437}{35150}$
+$Bel(\neg R_3) = P(u_3 | \neg R_3) \cdot \overline{Bel}(\neg R_3) = 0.2 \cdot \frac{2437}{7030} = \frac{2437}{35150} \approx 0.07$
 
 Normierung:
 
-$Bel(R_3) = \frac{41337 / 70300}{(41337 / 70300) + (2437 / 35150)} = \frac{41337}{46211} \approx 0.89$
+$\eta = \frac{1}{(41337 / 70300) + (2437 / 35150)} = \frac{70300}{46211} \approx 1.52$
 
-$Bel(\neg R_3) = \frac{2437 / 35150}{(41337 / 70300) + (2437 / 35150)} = \frac{4874}{46211} \approx 0.11$
+$Bel(R_3) = \frac{41337}{70300} \cdot \eta = \frac{41337}{46211} \approx 0.89$
+
+$Bel(\neg R_3) = \frac{2437}{35150} \cdot \eta = \frac{4874}{46211} \approx 0.11$
 
 ### **Tag 4**
 
@@ -74,9 +76,11 @@ $Bel(\neg R_4) = P(u_4 | \neg R_4) \cdot \overline{Bel}(\neg R_4) = 0.2 \cdot \f
 
 Normierung:
 
-$Bel(R_4) = \frac{2735829 / 4621100}{(2735829 / 4621100) + (158129 / 2310550)} = \frac{2735829}{3052087} \approx 0.90$
+$\eta = \frac{1}{(41337 / 70300) + (2437 / 35150)} = \frac{4621100}{3052087} \approx 1.51$
 
-$Bel(\neg R_4) = \frac{158129 / 2310550}{(2735829 / 4621100) + (158129 / 2310550)} = \frac{316258}{3052087} \approx 0.10$
+$Bel(R_4) = \frac{2735829}{4621100} \cdot \eta = \frac{2735829}{3052087} \approx 0.90$
+
+$Bel(\neg R_4) = \frac{158129}{2310550} \cdot \eta = \frac{316258}{3052087} \approx 0.10$
 
 Trägt der Direktor jeden Tag einen Regenschirm bei sich. konvergiert die Wahrscheinlichkeiten für Regen gegen 0.9 und die für Nicht-Regen gegen 0.1.
 
@@ -98,9 +102,11 @@ ${Bel}(\neg R_3) = \overline{Bel}(\neg R_3) = \frac{2437}{7030}$
 
 Normieren - keine Änderung:  
 
-$Bel(R_3) = \frac{4593 / 7030}{(4593 / 7030) + (2437 / 7030)} = \frac{4593}{7030} \approx 0.65$
+$\eta = \frac{1}{(4593 / 7030) + (2437 / 7030)} = 1$
 
-$Bel(\neg R_3) = \frac{2437 / 7030}{(4593 / 7030) + (2437 / 7030)} = \frac{2437}{7030} \approx 0.35$
+$Bel(R_3) = \frac{4593}{7030} \cdot \eta = \frac{4593}{7030} \approx 0.65$
+
+$Bel(\neg R_3) = \frac{2437}{7030} \cdot \eta = \frac{2437}{7030} \approx 0.35$
 
 ### **Tag 4**
 
@@ -115,10 +121,11 @@ ${Bel}(R_3) = \overline{Bel}(R_3) = \frac{19731}{35150}$
 ${Bel}(\neg R_3) = \overline{Bel}(\neg R_3) = \frac{15419}{35150}$
 
 Normieren - keine Änderung:  
+$\eta = \frac{1}{(19731 / 35150) + (15419 / 35150)} = 1$
 
-$Bel(R_3) = \frac{19731 / 35150}{(19731 / 35150) + (15419 / 35150)} = \frac{19731}{35150} \approx 0.56$
+$Bel(R_3) = \frac{19731}{35150} \cdot \eta = \frac{19731}{35150} \approx 0.56$
 
-$Bel(\neg R_3) = \frac{15419 / 35150}{(19731 / 35150) + (15419 / 35150)} = \frac{15419}{35150} \approx 0.44$
+$Bel(\neg R_3) = \frac{15419}{35150} \cdot \eta = \frac{15419}{35150} \approx 0.44$
 
 Wird der Direktor nicht mehr beobachtet, konvergieren die Wahrscheinlichkeiten für Regen und Nicht-Regen gegen 0.5.  
 Ohne zusätzliche Beobachtungen nähert sich die Verteilung immer weiter dem Zufall, da der Einfluss der Beobachtungen der ersten beiden Tage stetig sinkt.
