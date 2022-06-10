@@ -7,7 +7,7 @@
 ros::Publisher pose_pub;
 
 void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose) {
-    ROS_INFO_STREAM("Pose: " << pose->pose.position.x << ", " << pose->pose.position.y << ", " << pose->pose.position.z);
+    ROS_INFO_STREAM("Pose: " << pose->pose.pose.position.x << ", " << pose->pose.pose.position.y << ", " << pose->pose.pose.position.z);
 
     geometry_msgs::PoseArray pose_array;
 
