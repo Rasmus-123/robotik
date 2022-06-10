@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   message_filters
   nav_msgs
   geometry_msgs
+  ceres_msgs
 )
 
 find_package(Eigen3 REQUIRED)

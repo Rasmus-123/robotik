@@ -9,6 +9,7 @@ project(blatt05_gruppe04)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  geometry_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -202,3 +203,6 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+add_executable(mcl1 src/mcl1.cpp)
+target_link_libraries(mcl1 ${catkin_LIBRARIES})
