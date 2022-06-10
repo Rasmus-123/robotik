@@ -68,6 +68,8 @@ void ekfCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose)
 void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose) {
     ROS_INFO_STREAM("Pose: " << pose->pose.pose.position.x << ", " << pose->pose.pose.position.y << ", " << pose->pose.pose.position.z);
 
+    pose_array = geometry_msgs::PoseArray();
+
     pose_array.header.stamp = pose->header.stamp;
     pose_array.header.frame_id = pose->header.frame_id;
 
