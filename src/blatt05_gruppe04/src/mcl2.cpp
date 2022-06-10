@@ -9,33 +9,6 @@ ros::Publisher pose_pub;
 geometry_msgs::PoseWithCovarianceStamped last_pose;
 geometry_msgs::PoseArray pose_array;
 
-
-void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose) {
-    ROS_INFO_STREAM("Pose: " << pose->pose.pose.position.x << ", " << pose->pose.pose.position.y << ", " << pose->pose.pose.position.z);
-
-    pose_array.header.stamp = pose->header.stamp;
-    pose_array.header.frame_id = pose->header.frame_id;
-
-    pose_array.poses.push_back(pose->pose.pose);
-
-    // get random poses around the current pose with a sigma of 0.5m
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::normal_distribution<double> dist(0, 0.5);
-
-    for (int i = 0; i < 100; i++) {
-        geometry_msgs::Pose pose_random;
-        pose_random.position.x = pose->pose.pose.position.x + dist(gen);
-        pose_random.position.y = pose->pose.pose.position.y + dist(gen);
-        pose_random.orientation = pose->pose.pose.orientation;
-        pose_array.poses.push_back(pose_random);
-    }
-
-    pose_pub.publish(pose_array);
-
-    ekfCallback(pose);
-}
-
 void ekfCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose) {
 
     // current pose quaternion to roll pitch yaw
@@ -84,6 +57,32 @@ void ekfCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose)
     }
 
     pose_pub.publish(pose_array);
+}
+
+void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose) {
+    ROS_INFO_STREAM("Pose: " << pose->pose.pose.position.x << ", " << pose->pose.pose.position.y << ", " << pose->pose.pose.position.z);
+
+    pose_array.header.stamp = pose->header.stamp;
+    pose_array.header.frame_id = pose->header.frame_id;
+
+    pose_array.poses.push_back(pose->pose.pose);
+
+    // get random poses around the current pose with a sigma of 0.5m
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::normal_distribution<double> dist(0, 0.5);
+
+    for (int i = 0; i < 100; i++) {
+        geometry_msgs::Pose pose_random;
+        pose_random.position.x = pose->pose.pose.position.x + dist(gen);
+        pose_random.position.y = pose->pose.pose.position.y + dist(gen);
+        pose_random.orientation = pose->pose.pose.orientation;
+        pose_array.poses.push_back(pose_random);
+    }
+
+    pose_pub.publish(pose_array);
+
+    ekfCallback(pose);
 }
 
 int main(int argc, char **argv) {
