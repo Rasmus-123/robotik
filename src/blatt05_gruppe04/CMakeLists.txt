@@ -10,6 +10,7 @@ project(blatt05_gruppe04)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   geometry_msgs
+  tf
 )
 
 ## System dependencies are found with CMake's conventions
@@ -206,3 +207,6 @@ include_directories(
 
 add_executable(mcl1 src/mcl1.cpp)
 target_link_libraries(mcl1 ${catkin_LIBRARIES})
+
+add_executable(mcl2 src/mcl2.cpp)
+target_link_libraries(mcl2 ${catkin_LIBRARIES})
