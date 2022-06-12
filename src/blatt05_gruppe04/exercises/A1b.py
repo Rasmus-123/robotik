@@ -1,6 +1,5 @@
 # A1b
 
-
 def landmark(array, found: bool):
     """Update Probabilities if landmark has been found (or not found)"""
     LANDMARKS = [1, 4, 6, 9, 13]
