@@ -30,18 +30,24 @@ void ekfCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose)
         double diff_pitch = pitch - pitch2;
         double diff_yaw = yaw - yaw2;
 
+        double dist_x = pose->pose.pose.position.x - last_pose.pose.pose.position.x;
+        double dist_y = pose->pose.pose.position.y - last_pose.pose.pose.position.y;
+
+        double abs_dist = sqrt(dist_x*dist_x + dist_y*dist_y);
 
         for(int i = 0; i < pose_array.poses.size(); i++) {
-            pose_array.poses[i].position.x += pose->pose.pose.position.x - last_pose.pose.pose.position.x;
-            pose_array.poses[i].position.y += pose->pose.pose.position.y - last_pose.pose.pose.position.y;
-            
-
             // pose from pose_array to quaternion
             tf::Quaternion q3(pose_array.poses[i].orientation.x, pose_array.poses[i].orientation.y, pose_array.poses[i].orientation.z, pose_array.poses[i].orientation.w);
             tf::Matrix3x3 m3(q3);
             double roll3, pitch3, yaw3;
             m3.getRPY(roll3, pitch3, yaw3);
 
+            double px = (dist_x < 0) ? -1 : 1;
+            double py = (dist_y < 0) ? -1 : 1;
+
+            pose_array.poses[i].position.x += px * abs_dist * std::sin(yaw3 * 0.5);
+            pose_array.poses[i].position.y += -py * abs_dist * std::cos(yaw3 * 0.5);
+            
             // calculate new roll pitch yaw
             double new_roll = roll3 + diff_roll;
             double new_pitch = pitch3 + diff_pitch;
@@ -68,27 +74,27 @@ void ekfCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose)
 void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose) {
     ROS_INFO_STREAM("Pose: " << pose->pose.pose.position.x << ", " << pose->pose.pose.position.y << ", " << pose->pose.pose.position.z);
 
-    if(pose_array.poses.size() == 0) {
-        pose_array.header.stamp = pose->header.stamp;
-        pose_array.header.frame_id = pose->header.frame_id;
+    pose_array = geometry_msgs::PoseArray();
 
-        pose_array.poses.push_back(pose->pose.pose);
+    pose_array.header.stamp = pose->header.stamp;
+    pose_array.header.frame_id = pose->header.frame_id;
 
-        // get random poses around the current pose with a sigma of 0.5m
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::normal_distribution<double> dist(0, 0.5);
+    pose_array.poses.push_back(pose->pose.pose);
 
-        for (int i = 0; i < 100; i++) {
-            geometry_msgs::Pose pose_random;
-            pose_random.position.x = pose->pose.pose.position.x + dist(gen);
-            pose_random.position.y = pose->pose.pose.position.y + dist(gen);
-            pose_random.orientation = pose->pose.pose.orientation;
-            pose_array.poses.push_back(pose_random);
-        }
+    // get random poses around the current pose with a sigma of 0.5m
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::normal_distribution<double> dist(0, 0.5);
+
+    for (int i = 0; i < 100; i++) {
+        geometry_msgs::Pose pose_random;
+        pose_random.position.x = pose->pose.pose.position.x + dist(gen);
+        pose_random.position.y = pose->pose.pose.position.y + dist(gen);
+        pose_random.orientation = pose->pose.pose.orientation;
+        pose_array.poses.push_back(pose_random);
     }
 
-    ekfCallback(pose);
+
 }
 
 int main(int argc, char **argv) {
