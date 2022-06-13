@@ -2,6 +2,7 @@
 #include <geometry_msgs/PoseArray.h>
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <geometry_msgs/Pose.h>
+#include <tf/transform_listener.h>
 #include <random>
 
 ros::Publisher pose_pub;
@@ -16,16 +17,30 @@ void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose
 
     pose_array.poses.push_back(pose->pose.pose);
 
-    // get random poses around the current pose with a sigma of 0.5m
+    // get random poses around the current pose with a sigma of 0.5
     std::random_device rd;
     std::mt19937 gen(rd());
     std::normal_distribution<double> dist(0, 0.5);
+    std::normal_distribution<double> rot(0, 0.1);
 
     for (int i = 0; i < 100; i++) {
         geometry_msgs::Pose pose_random;
         pose_random.position.x = pose->pose.pose.position.x + dist(gen);
         pose_random.position.y = pose->pose.pose.position.y + dist(gen);
-        pose_random.orientation = pose->pose.pose.orientation;
+
+        tf::Quaternion q(pose->pose.pose.orientation.x, pose->pose.pose.orientation.y, pose->pose.pose.orientation.z, pose->pose.pose.orientation.w);
+        tf::Matrix3x3 m(q);
+        double roll, pitch, yaw;
+        m.getRPY(roll, pitch, yaw);
+
+        yaw += rot(gen);
+
+        q.setRPY(roll, pitch, yaw);
+        pose_random.orientation.x = q.x();
+        pose_random.orientation.y = q.y();
+        pose_random.orientation.z = q.z();
+        pose_random.orientation.w = q.w();
+
         pose_array.poses.push_back(pose_random);
     }
 

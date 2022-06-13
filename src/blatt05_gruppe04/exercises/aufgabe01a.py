@@ -1,101 +1,112 @@
+# A1a
+
 import matplotlib.pyplot as plt
 
-# normalize probabilities
-def normalize(x):
-    normalization_factor = 1 / sum(x)
-    for i in range(len(x)):
-        x[i] *= normalization_factor
-    return x
+def landmark(array, found: bool):
+    """Update Probabilities if landmark has been found (or not found)"""
+    LANDMARKS = [1, 4, 6, 9, 13]
 
-def main():
-    probabilities = []
+    landmark_factor = 0.7
+    no_landmark_factor = 0.25
 
-    for i in range(0,16):
-        probabilities.append(1/16)
+    if not found:
+        landmark_factor = 1 - landmark_factor
+        no_landmark_factor = 1 - no_landmark_factor
 
-    # robot detects first landmark
-    for i in range(0,16):
-        probabilities[i] = 0.25
+    for i in LANDMARKS:
+        array[i-1] *= landmark_factor
 
-    probabilities[1-1] = 0.7
-    probabilities[4-1] = 0.7
-    probabilities[6-1] = 0.7
-    probabilities[9-1] = 0.7
-    probabilities[13-1] = 0.7
+    for i in [x for x in range(1, len(array) + 1) if x not in LANDMARKS]:
+        array[i-1] *= no_landmark_factor
 
-    probabilities = normalize(probabilities)
+    return array
 
-    print("Probabilities at the beginning:")
-    print(probabilities)
 
-    # open windows with simple graph visualizing the probabilities as bar chart and the title "Probabilities at the beginning"
-    plt.bar(range(1,17), probabilities)
-    plt.title("Probabilities at the beginning")
-    plt.show()
+def normalize(array):
+    """Normalisieren eines Zahlenarrays"""
+    eta = 1 / sum(array)
+    return [i * eta for i in array]
 
-    # robot moves two cells clockwise
-    # moves every element in probabilities by two positions to the right
-    probabilities = probabilities[-2:] + probabilities[:-2]
+title = 0
 
-    print("Probabilities after moving two cells clockwise:")
-    print(probabilities)
-
-    # open windows with simple graph visualizing the probabilities as bar chart and the title "Probabilities after moving two cells clockwise"
-    plt.bar(range(1,17), probabilities)
-    plt.title("Probabilities after moving two cells clockwise")
-    plt.show()
-
-    # robot detects second landmark
-    for i in range(0,16):
-        if i == 1-1 or i == 4-1 or i == 6-1 or i == 9-1 or i == 13-1:
-            probabilities[i] *= 0.7
-        else:
-            probabilities[i] *= 0.25
+def print_probabilities(array):
+    global title
+    """Simple Output"""
     
-    probabilities = normalize(probabilities)
+    # plot probabilities as bar graph and save it as png
+    plt.bar(range(1, 17), array)
+    plt.savefig(f"figure - {title}.png")
+    plt.clf()
+    title += 1
 
-    print("Probabilities after detecting second landmark:")
-    print(probabilities)
+    print([round(x, 4) for x in array], "^T", sep='')
 
-    # open windows with simple graph visualizing the probabilities as bar chart and the title "Probabilities after detecting second landmark"
-    plt.bar(range(1,17), probabilities)
-    plt.title("Probabilities after detecting second landmark")
-    plt.show()
-    
+### Start ###
 
-    # robot moves four cells clockwise
-    probabilities = probabilities[-4:] + probabilities[:-4]
+# Set Array with starting probabilities
+probs = [1/16] * 16
 
-    print("Probabilities after moving four cells clockwise:")
-    print(probabilities)
+print("Initialisiere alle Aufenthaltswahrscheinlichkeiten für die einzelnen Felder mit einer gleichverteilten Wahrscheinlichkeit von 1/16:")
+print_probabilities(probs)
 
-    # open windows with simple graph visualizing the probabilities as bar chart and the title "Probabilities after moving four cells clockwise"
-    plt.bar(range(1,17), probabilities)
-    plt.title("Probabilities after moving four cells clockwise")
-    plt.show()
-    
+## Schritt 1 - Eine Landmarke ##
 
-    # robot does not detect landmark
-    for i in range(0,16):
-        if i == 1-1 or i == 4-1 or i == 6-1 or i == 9-1 or i == 13-1:
-            probabilities[i] *= 0.30
-        else:
-            probabilities[i] *= 0.75
+print("\n## Schritt 1 - Eine Landmarke ##\n")
 
-    probabilities = normalize(probabilities)
+probs = landmark(probs, True)
 
-    print("Probabilities after not detecting landmark:")
-    print(probabilities)
+probs = normalize(probs)
 
-    # open windows with simple graph visualizing the probabilities as bar chart and the title "Probabilities after not detecting landmark"
-    plt.bar(range(1,17), probabilities)
-    plt.title("Probabilities after not detecting landmark")
-    plt.show()
+print("Multipliziere jeden Eintrag, auf welchem eine Landmarke steht mit 0.7 und jeden Eintrag auf welchem keine Landmarke steht mit 0.25. Danach wird der Vektor normalisiert, sodass alle Wahrscheinlichkeiten addiert 1 ergeben:")
+print_probabilities(probs)
 
+## Schritt 2 - 2 Schritte im Uhrzeigersinn ##
 
-    max_prob_pos = probabilities.index(max(probabilities))
-    print("Most likely start position:", max_prob_pos-6+1)
+print("\n## Schritt 2 - 2 Schritte im Uhrzeigersinn ##\n")
 
+probs = probs[-2:] + probs[:-2]
 
-if __name__ == "__main__":
-    main()
+print("Der Roboter bewegt sich zwei Zellen im Uhrzeigersinn, was bedeutet, dass die Wahrscheinlichkeiten in dem Vektor um je zwei Stellen weiter verschoben werden. Dies geschieht dabei dann 'im Kreis':")
+print_probabilities(probs)
+
+## Schritt 3 - Eine Landmarke ##
+
+print("\n## Schritt 3 - Eine Landmarke ##\n")
+
+probs = landmark(probs, True)
+
+probs = normalize(probs)
+
+print("Multipliziere jeden Eintrag, auf welchem eine Landmarke steht mit 0.7 und jeden Eintrag auf welchem keine Landmarke steht mit 0.25. Danach wird der Vektor normalisiert, sodass alle Wahrscheinlichkeiten addiert 1 ergeben:")
+print_probabilities(probs)
+
+## Schritt 4 - 4 Schritte im Uhrzeigersinn ##
+
+print("\n## Schritt 4 - 4 Schritte im Uhrzeigersinn ##\n")
+
+probs = probs[-4:] + probs[:-4]
+
+print("Der Roboter bewegt sich vier Zellen im Uhrzeigersinn, was bedeutet, dass die Wahrscheinlichkeiten in dem Vektor um je vier Stellen weiter verschoben werden. Dies geschieht dabei dann 'im Kreis':")
+print_probabilities(probs)
+
+## Schritt 5 - Keine Landmarke ##
+
+print("\n## Schritt 5 - Keine Landmarke ##\n")
+
+probs = landmark(probs, False)
+
+probs = normalize(probs)
+
+print("Multipliziere jeden Eintrag, auf welchem eine Landmarke steht mit 0.3 und jeden Eintrag auf welchem keine Landmarke steht mit 0.75. Danach wird der Vektor normalisiert, sodass alle Wahrscheinlichkeiten addiert 1 ergeben:")
+print_probabilities(probs)
+
+## Result ##
+
+max_prob = max(probs)
+
+# Find all Indexes with max_prob (in case multiple fields have the same probability)
+max_indexes = [i for i in range(1, len(probs) + 1) if probs[i-1] == max_prob]
+start_fields = [i - 6 for i in max_indexes]
+
+print("Der Roboter steht mit Wahrscheinlichkeit", round(max_prob, 4), "auf Feld:", max_indexes)
+print("Da er 6 Schritte im Uhrzeigersinn gefahren ist, ist das wahrscheinlichste Startfeld:", start_fields)
