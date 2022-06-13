@@ -1,15 +1,15 @@
 Aufgabe 2
 
-a)  Bei der Lokalisierung entsteht das Problem, dass viele verschiedene Positionen des Roboters berücksichtigt werden müssen. Das bedeutet, dass das sehr aufwendig ist. Bei der Monte Carlo Lokalisierung werden diese Wahrscheinlichkeiten nun nicht genau berechnet, sondern nur approximiert.
-    Dieser startet damit, dass (wenn keine Anfangspose gegeben ist) jede Position den Roboters gleich wahrscheinlich ist.
-    Findet danach eine Sensormessung statt, so können anhand dieser nun die Wahrscheinlichkeiten angepasst werden, was bedeutet, dass die nun einige Partikel wahrscheinlicher als andere sind.
-    Danach findet dann das Resampling statt, bei welchem zufällig, nach den gegebenen Gewichte der Partikel, diese eine zufällige Menge diese gezogen wird.
-    Danach findet dann eine Aktion des Roboters statt, welche in die Partikelmenge integriert wird. Danach findet dann eine erneute Sensormessung statt und der Algorithmus wird erneut durchlaufen.
+a)  Bei der Lokalisierung entsteht das Problem, dass viele verschiedene Positionen des Roboters berücksichtigt werden müssen. Das bedeutet, dass das sehr aufwendig ist. Dabei wird eine Menge von "relevanten" Positionen aus der Menge aller Positionen entnommen, auf welchen dann nun die Berechnungen stattfinden.
+    1. Dieser startet damit, dass (wenn keine Anfangspose gegeben ist) jede Position des Roboters gleich wahrscheinlich ist. Anhand dieser Wahrscheinlichkeiten werden dann nun einige Menge an Partikeln gestreut.
+    2. Findet danach eine Sensormessung statt, so können anhand dieser nun die Wahrscheinlichkeiten der Partikel angepasst werden, was bedeutet, dass es sich danach (vermutlich) nicht mehr um eine Gleichverteilung handelt.
+    3. Danach findet dann das Resampling statt, bei welchem zufällig, nach den gegebenen Gewichten der Partikel, diese erneut nach diesen randomisiert gestreut werden. Dabei wird dann allen Partikeln das gleiche Gewicht zugewiesen.
+    4. Danach findet dann eine Aktion des Roboters statt, welche in die Partikelmenge integriert wird. Danach findet dann eine erneute Sensormessung statt und der Algorithmus wird von Schritt 2 aus erneut durchlaufen.
 
-b)  Um unnötige/unwichtige/unwahrscheinliche Werte zu entfernen und somit die Laufzeit zu verbessern?
+b)  Dies findet statt, damit wenig Positionen weiter betrachtet werden, welche unwahrscheinlich sind.
 
-c)  
+c)  Konstant. TODO
 
 d)  Hat man solch eine Karte vorliegen, so lässt sich diese zuerst mit z. B. einem simulierten Laserscan in dieser Karte diese in den Messraum umwandeln. Dieser lässt sich dann nutzen, um die Gewichte der Partikel anzupassen. Ist ein Messwert in den Messdaten, aber nicht in der Karte enthalten, so lässt sich mit dieser Information das Gewicht von diesem Messwert verringern.
 
-e)  Man könnte aus diesen ggf. Keypoints entnehmen oder andere Informationen, die man mit dem Scan matchen kann.
+e)  Man könnte aus diesen ggf. Keypoints entnehmen oder andere Informationen, die man mit dem Scan matchen kann und damit dann die Gewichte anpassen.

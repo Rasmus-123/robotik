@@ -11,6 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   geometry_msgs
   tf
+  mcl_helper
 )
 
 ## System dependencies are found with CMake's conventions
@@ -210,3 +211,9 @@ target_link_libraries(mcl1 ${catkin_LIBRARIES})
 
 add_executable(mcl2 src/mcl2.cpp)
 target_link_libraries(mcl2 ${catkin_LIBRARIES})
+
+add_executable(scan_simulator_testA src/scan_simulator_testA.cpp)
+target_link_libraries(scan_simulator_testA ${catkin_LIBRARIES})
+
+add_executable(scan_simulator_test src/scan_simulator_test.cpp)
+target_link_libraries(scan_simulator_test ${catkin_LIBRARIES})
