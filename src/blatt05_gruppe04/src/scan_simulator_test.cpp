@@ -15,9 +15,11 @@
 using namespace mcl_helper;
 ScanSimulator scan_sim;
 
+nav_msgs::OccupancyGrid latest_map;
+
 ros::Publisher sim_pub;
 
-void simCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose, const nav_msgs::OccupancyGrid::ConstPtr &map) {
+void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose) {
     geometry_msgs::Pose pose_sim;
     pose_sim.position.x = pose->pose.pose.position.x;
     pose_sim.position.y = pose->pose.pose.position.y;
@@ -26,10 +28,12 @@ void simCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose,
     pose_sim.orientation.y = pose->pose.pose.orientation.y;
     pose_sim.orientation.z = pose->pose.pose.orientation.z;
     pose_sim.orientation.w = pose->pose.pose.orientation.w;
-
+    ROS_INFO("1");
     
-    scan_sim.setMap(*map);
+    scan_sim.setMap(latest_map);
+    ROS_INFO("2");
     sensor_msgs::LaserScan simulated_scan;
+    simulated_scan.header.stamp = latest_map.header.stamp;
     simulated_scan.header.frame_id = "scanner_simulated";
     simulated_scan.angle_min = -2.3570001125335693;
     simulated_scan.angle_max = 2.3570001125335693;
@@ -38,7 +42,13 @@ void simCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose,
     simulated_scan.range_max = 10.0;
     scan_sim.simulateScan(pose_sim, simulated_scan);
 
+    ROS_INFO("3");
+
     sim_pub.publish(simulated_scan);
+}
+
+void simCallback(const nav_msgs::OccupancyGrid::ConstPtr &map) {
+    latest_map = *map;
 }
 
 int main(int argc, char **argv) {
@@ -48,12 +58,8 @@ int main(int argc, char **argv) {
     ros::NodeHandle nh;
     
     // subscriber
-    message_filters::Subscriber<geometry_msgs::PoseWithCovarianceStamped> pose_sub(nh, "/initialpose", 1000);
-    message_filters::Subscriber<nav_msgs::OccupancyGrid> map_sub(nh, "/map", 1000);
-
-    typedef message_filters::sync_policies::ApproximateTime<geometry_msgs::PoseWithCovarianceStamped, nav_msgs::OccupancyGrid> MySyncPolicy;
-    message_filters::Synchronizer<MySyncPolicy> sync(MySyncPolicy(10), pose_sub, map_sub);
-    sync.registerCallback(boost::bind(&simCallback, _1, _2));
+    ros::Subscriber pose_sub = nh.subscribe("/initialpose", 1000, &poseCallback);
+    ros::Subscriber map_sub = nh.subscribe("/map", 1000, &simCallback);
 
     sim_pub = nh.advertise<sensor_msgs::LaserScan>("/scan_simulated", 1000);
 
