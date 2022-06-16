@@ -27,18 +27,16 @@ void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose
     
     static tf2_ros::TransformBroadcaster tf2_br;
 
-    geometry_msgs::Pose pose_sim;
-    pose_sim.position.x = pose->pose.pose.position.x;
-    pose_sim.position.y = pose->pose.pose.position.y;
-    pose_sim.position.z = pose->pose.pose.position.z;
-    pose_sim.orientation.x = pose->pose.pose.orientation.x;
-    pose_sim.orientation.y = pose->pose.pose.orientation.y;
-    pose_sim.orientation.z = pose->pose.pose.orientation.z;
-    pose_sim.orientation.w = pose->pose.pose.orientation.w;
-    ROS_INFO("1");
-    
+    if (latest_map.header.frame_id.empty())
+    {
+        std::cout << "Waiting for map to be published!" << std::endl;
+        return;
+    }
+
+    geometry_msgs::Pose pose_sim = pose->pose.pose;
+
     scan_sim.setMap(latest_map);
-    ROS_INFO("2");
+
     sensor_msgs::LaserScan simulated_scan;
     simulated_scan.header.stamp = ros::Time::now();
     simulated_scan.header.frame_id = "scanner_simulated";
@@ -49,11 +47,9 @@ void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose
     simulated_scan.range_max = 10.0;
     scan_sim.simulateScan(pose_sim, simulated_scan);
 
-    ROS_INFO("3");
-
     geometry_msgs::TransformStamped tf_stamped;
-    tf_stamped.child_frame_id = simulated_scan.header.frame_id; // Source Frame
-    tf_stamped.header.frame_id = "map"; // Target Frame
+    tf_stamped.child_frame_id = simulated_scan.header.frame_id; // Source Frame: "scanner_simulated"
+    tf_stamped.header.frame_id = latest_map.header.frame_id; // Target Frame: "map"
     tf_stamped.header.stamp = ros::Time::now();
 
     tf_stamped.transform.rotation = pose_sim.orientation;
