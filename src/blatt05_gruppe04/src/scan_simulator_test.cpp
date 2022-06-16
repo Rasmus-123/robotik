@@ -14,7 +14,6 @@
 
 #include <tf2_ros/transform_broadcaster.h>
 #include <geometry_msgs/TransformStamped.h>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 using namespace mcl_helper;
 ScanSimulator scan_sim;
@@ -23,6 +22,9 @@ nav_msgs::OccupancyGrid latest_map;
 
 ros::Publisher sim_pub;
 
+/**
+ * Warum tauchen Scan+Transform ab dem zweiten durchlauf auf?
+ */
 void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose) {
     
     static tf2_ros::TransformBroadcaster tf2_br;
@@ -59,6 +61,8 @@ void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose
 
     sim_pub.publish(simulated_scan);
     tf2_br.sendTransform(tf_stamped);
+
+    std::cout << "Published Scan and Transform!" << std::endl;
 }
 
 void simCallback(const nav_msgs::OccupancyGrid::ConstPtr &map) {
