@@ -12,6 +12,10 @@
 
 #include <mcl_helper/scan_simulator.h>
 
+#include <tf2_ros/transform_broadcaster.h>
+#include <geometry_msgs/TransformStamped.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+
 using namespace mcl_helper;
 ScanSimulator scan_sim;
 
@@ -20,6 +24,9 @@ nav_msgs::OccupancyGrid latest_map;
 ros::Publisher sim_pub;
 
 void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose) {
+    
+    static tf2_ros::TransformBroadcaster tf2_br;
+
     geometry_msgs::Pose pose_sim;
     pose_sim.position.x = pose->pose.pose.position.x;
     pose_sim.position.y = pose->pose.pose.position.y;
@@ -33,7 +40,7 @@ void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose
     scan_sim.setMap(latest_map);
     ROS_INFO("2");
     sensor_msgs::LaserScan simulated_scan;
-    simulated_scan.header.stamp = latest_map.header.stamp;
+    simulated_scan.header.stamp = ros::Time::now();
     simulated_scan.header.frame_id = "scanner_simulated";
     simulated_scan.angle_min = -2.3570001125335693;
     simulated_scan.angle_max = 2.3570001125335693;
@@ -44,7 +51,18 @@ void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose
 
     ROS_INFO("3");
 
+    geometry_msgs::TransformStamped tf_stamped;
+    tf_stamped.child_frame_id = simulated_scan.header.frame_id; // Source Frame
+    tf_stamped.header.frame_id = "map"; // Target Frame
+    tf_stamped.header.stamp = ros::Time::now();
+
+    tf_stamped.transform.rotation = pose_sim.orientation;
+    tf_stamped.transform.translation.x = pose_sim.position.x;
+    tf_stamped.transform.translation.y = pose_sim.position.y;
+    tf_stamped.transform.translation.z = pose_sim.position.z;
+
     sim_pub.publish(simulated_scan);
+    tf2_br.sendTransform(tf_stamped);
 }
 
 void simCallback(const nav_msgs::OccupancyGrid::ConstPtr &map) {
