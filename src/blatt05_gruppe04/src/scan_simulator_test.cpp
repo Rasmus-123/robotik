@@ -49,6 +49,11 @@ void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose
     simulated_scan.range_max = 10.0;
     scan_sim.simulateScan(pose_sim, simulated_scan);
 
+    // Publish Transformation
+
+    // Pose ist relativ zu Map (oder so transformierbar). Scan ist relativ zu Pose.
+    // Dann muss die Transformation einfach nur die Pose sein.
+
     geometry_msgs::TransformStamped tf_stamped;
     tf_stamped.child_frame_id = simulated_scan.header.frame_id; // Source Frame: "scanner_simulated"
     tf_stamped.header.frame_id = latest_map.header.frame_id; // Target Frame: "map"
