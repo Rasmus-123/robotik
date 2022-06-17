@@ -5,68 +5,125 @@
 #include <random>
 #include <tf/transform_listener.h>
 
+#include <tf2/LinearMath/Quaternion.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+
+#include <Eigen/Dense>
+
 ros::Publisher pose_pub;
 geometry_msgs::PoseWithCovarianceStamped last_pose;
 geometry_msgs::PoseArray pose_array;
+
+struct Pose2D {
+    float x;
+    float y;
+    float alpha;
+};
+
+float get_yaw(const geometry_msgs::Quaternion& q)
+{
+    tf2::Quaternion rot;
+    tf2::convert(q, rot);
+    tf2::Matrix3x3 m(rot);
+    double roll, pitch, yaw;
+    m.getRPY(roll, pitch, yaw);
+    return yaw;
+}
+
+void convert(const geometry_msgs::Pose& from, Pose2D& to)
+{
+    to.x = from.position.x;
+    to.y = from.position.y;
+    to.alpha = get_yaw(from.orientation);
+}
+
+void convert(   const geometry_msgs::Pose& from,
+                Eigen::Affine3d& to)
+{
+    Eigen::Vector3d translation;
+    translation.x() = from.position.x;
+    translation.y() = from.position.y;
+    translation.z() = from.position.z;
+    Eigen::Quaterniond rotation;
+    rotation.x() = from.orientation.x;
+    rotation.y() = from.orientation.y;
+    rotation.z() = from.orientation.z;
+    rotation.w() = from.orientation.w;
+    to.setIdentity();
+    to.linear() = rotation.matrix();
+    to.translation() = translation;
+}
+
+geometry_msgs::Pose delta_pose(const geometry_msgs::Pose& p1, const geometry_msgs::Pose& p2)
+{
+    Eigen::Affine3d T_p1_map;
+    convert(p1, T_p1_map);
+
+    Eigen::Affine3d T_p2_map;
+    convert(p2, T_p2_map);
+
+    // we need T_p2_p1
+    
+    // T_p2_p1 = T_p2->p1 
+    Eigen::Affine3d T_p2_p1 = T_p1_map.inverse() * T_p2_map;
+
+    Eigen::Vector3d t = T_p2_p1.translation();
+    Eigen::Quaterniond rot;
+    rot = T_p2_p1.linear();
+
+    geometry_msgs::Pose delta_p;
+    delta_p.position.x = t.x();
+    delta_p.position.y = t.y();
+    delta_p.position.z = t.z();
+
+    delta_p.orientation.x = rot.x();
+    delta_p.orientation.y = rot.y();
+    delta_p.orientation.z = rot.z();
+    delta_p.orientation.w = rot.w();
+
+    return delta_p;
+}
+
+Pose2D apply_delta(
+    const Pose2D& pose, 
+    const Pose2D& delta)
+{
+    Pose2D pose_new;
+
+    pose_new.x = delta.x * cos(pose.alpha) + delta.y * -sin(pose.alpha) + pose.x;
+    pose_new.y = delta.x * sin(pose.alpha) + delta.y * cos(pose.alpha) + pose.y;
+    pose_new.alpha = pose.alpha + delta.alpha;
+
+    return pose_new;
+}
 
 void ekfCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose) {
 
     if(!last_pose.header.frame_id.empty()) {
 
-        // current pose quaternion to roll pitch yaw
-        tf::Quaternion q(pose->pose.pose.orientation.x, pose->pose.pose.orientation.y, pose->pose.pose.orientation.z, pose->pose.pose.orientation.w);
-        tf::Matrix3x3 m(q);
-        double roll, pitch, yaw;
-        m.getRPY(roll, pitch, yaw);
-
-        // last pose quaternion to roll pitch yaw
-        tf::Quaternion q2(last_pose.pose.pose.orientation.x, last_pose.pose.pose.orientation.y, last_pose.pose.pose.orientation.z, last_pose.pose.pose.orientation.w);
-        tf::Matrix3x3 m2(q2);
-        double roll2, pitch2, yaw2;
-        m2.getRPY(roll2, pitch2, yaw2);
-
-        // calculate difference in roll pitch yaw
-        double diff_roll = roll - roll2;
-        double diff_pitch = pitch - pitch2;
-        double diff_yaw = yaw - yaw2;
-
-        double dist_x = pose->pose.pose.position.x - last_pose.pose.pose.position.x;
-        double dist_y = pose->pose.pose.position.y - last_pose.pose.pose.position.y;
-
-        double abs_dist = sqrt(dist_x*dist_x + dist_y*dist_y);
-
-        for(int i = 0; i < pose_array.poses.size(); i++) {
-            // pose from pose_array to quaternion
-            tf::Quaternion q3(pose_array.poses[i].orientation.x, pose_array.poses[i].orientation.y, pose_array.poses[i].orientation.z, pose_array.poses[i].orientation.w);
-            tf::Matrix3x3 m3(q3);
-            double roll3, pitch3, yaw3;
-            m3.getRPY(roll3, pitch3, yaw3);
-
-            double px = (dist_x < 0) ? -1 : 1;
-            double py = (dist_y < 0) ? -1 : 1;
-
-            pose_array.poses[i].position.x += px * abs_dist * std::sin(yaw3 * 0.5);
-            pose_array.poses[i].position.y += -py * abs_dist * std::cos(yaw3 * 0.5);
+            Pose2D current_ekf_2d;
+            convert(pose->pose.pose, current_ekf_2d);
             
-            // calculate new roll pitch yaw
-            double new_roll = roll3 + diff_roll;
-            double new_pitch = pitch3 + diff_pitch;
-            double new_yaw = yaw3 + diff_yaw;
+            geometry_msgs::Pose current_ekf = pose->pose.pose;
+            geometry_msgs::Pose delta_ekf = delta_pose(last_pose.pose.pose, current_ekf);
 
-            // roll pitch yaw to quaternion
-            tf::Quaternion q4;
-            q4.setRPY(new_roll, new_pitch, new_yaw);
-
-            // tf::Quaternion to geometry_msgs::Quaternion for pose from pose_array
-            pose_array.poses[i].orientation.x = q4.x();
-            pose_array.poses[i].orientation.y = q4.y();
-            pose_array.poses[i].orientation.z = q4.z();
-            pose_array.poses[i].orientation.w = q4.w();
-        }
-
-        pose_pub.publish(pose_array);
-
+            Pose2D delta_ekf_2d;
+            convert(delta_ekf, delta_ekf_2d);
+            
+            for(size_t i=0; i < pose_array.poses.size(); i++)
+            {
+                Pose2D old_pose;
+                old_pose.x = pose_array.poses[i].position.x;
+                old_pose.y = pose_array.poses[i].position.y;
+                old_pose.alpha = get_yaw(pose_array.poses[i].orientation);
+                Pose2D new_pose = apply_delta(old_pose, delta_ekf_2d);
+                pose_array.poses[i].position.x = new_pose.x;
+                pose_array.poses[i].position.y = new_pose.y;
+                pose_array.poses[i].orientation = tf2::toMsg(tf2::Quaternion(tf2::Vector3(0,0,1), new_pose.alpha));
+            }
     }
+
+    pose_pub.publish(pose_array);
 
     last_pose = *pose;
 }
@@ -81,16 +138,30 @@ void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose
 
     pose_array.poses.push_back(pose->pose.pose);
 
-    // get random poses around the current pose with a sigma of 0.5m
+    // get random poses around the current pose with a sigma of 0.5
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::normal_distribution<double> dist(0, 0.5);
+    std::normal_distribution<double> dist(0, 75);
+    std::normal_distribution<double> rot(0, 0.2);
 
     for (int i = 0; i < 100; i++) {
         geometry_msgs::Pose pose_random;
         pose_random.position.x = pose->pose.pose.position.x + dist(gen);
         pose_random.position.y = pose->pose.pose.position.y + dist(gen);
-        pose_random.orientation = pose->pose.pose.orientation;
+
+        tf::Quaternion q(pose->pose.pose.orientation.x, pose->pose.pose.orientation.y, pose->pose.pose.orientation.z, pose->pose.pose.orientation.w);
+        tf::Matrix3x3 m(q);
+        double roll, pitch, yaw;
+        m.getRPY(roll, pitch, yaw);
+
+        yaw += rot(gen);
+
+        q.setRPY(roll, pitch, yaw);
+        pose_random.orientation.x = q.x();
+        pose_random.orientation.y = q.y();
+        pose_random.orientation.z = q.z();
+        pose_random.orientation.w = q.w();
+
         pose_array.poses.push_back(pose_random);
     }
 
