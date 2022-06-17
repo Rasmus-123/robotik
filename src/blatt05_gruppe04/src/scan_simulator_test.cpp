@@ -45,7 +45,7 @@ void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose
     simulated_scan.angle_min = -2.3570001125335693;
     simulated_scan.angle_max = 2.3570001125335693;
     simulated_scan.angle_increment = 0.017459258437156677;
-    simulated_scan.angle_min = 0.05000000074505806;
+    simulated_scan.range_min = 0.05000000074505806;
     simulated_scan.range_max = 10.0;
     scan_sim.simulateScan(pose_sim, simulated_scan);
 

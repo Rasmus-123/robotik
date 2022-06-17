@@ -123,6 +123,8 @@ void ekfCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose)
             }
     }
 
+    pose_array.header.stamp = pose->header.stamp;
+
     pose_pub.publish(pose_array);
 
     last_pose = *pose;
@@ -141,10 +143,10 @@ void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose
     // get random poses around the current pose with a sigma of 0.5
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::normal_distribution<double> dist(0, 75);
+    std::normal_distribution<double> dist(0, 1.3);
     std::normal_distribution<double> rot(0, 0.2);
 
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 2000; i++) {
         geometry_msgs::Pose pose_random;
         pose_random.position.x = pose->pose.pose.position.x + dist(gen);
         pose_random.position.y = pose->pose.pose.position.y + dist(gen);
