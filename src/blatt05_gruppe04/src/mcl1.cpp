@@ -20,8 +20,8 @@ void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose
     // get random poses around the current pose with a sigma of 0.5
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::normal_distribution<double> dist(0, 0.5);
-    std::normal_distribution<double> rot(0, 0.1);
+    std::normal_distribution<double> dist(0, 0.75);
+    std::normal_distribution<double> rot(0, 0.2);
 
     for (int i = 0; i < 100; i++) {
         geometry_msgs::Pose pose_random;
