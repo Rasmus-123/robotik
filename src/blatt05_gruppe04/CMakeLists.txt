@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   tf
   mcl_helper
+  tf2
 )
 
 ## System dependencies are found with CMake's conventions
@@ -217,3 +218,6 @@ target_link_libraries(scan_simulator_testA ${catkin_LIBRARIES})
 
 add_executable(scan_simulator_test src/scan_simulator_test.cpp)
 target_link_libraries(scan_simulator_test ${catkin_LIBRARIES})
+
+add_executable(mcl_combined src/mcl_combined.cpp)
+target_link_libraries(mcl_combined ${catkin_LIBRARIES})

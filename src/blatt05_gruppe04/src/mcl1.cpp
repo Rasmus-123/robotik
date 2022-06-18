@@ -23,7 +23,7 @@ void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose
     std::normal_distribution<double> dist(0, 0.75);
     std::normal_distribution<double> rot(0, 0.2);
 
-    for (int i = 0; i < 100; i++) {
+    for (int i = 0; i < 500; i++) {
         geometry_msgs::Pose pose_random;
         pose_random.position.x = pose->pose.pose.position.x + dist(gen);
         pose_random.position.y = pose->pose.pose.position.y + dist(gen);
