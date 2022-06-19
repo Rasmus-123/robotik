@@ -162,6 +162,8 @@ void getPose(const geometry_msgs::PoseArray::ConstPtr &pose_array, std::vector<d
         pose_stamped.pose.pose.orientation = tf2::toMsg(tf2::Quaternion(0, 0, yaw));
         // ROS_INFO("pose_stamped: x: %f y: %f z: %f x: %f y: %f z: %f w: %f", pose_stamped.pose.pose.position.x, pose_stamped.pose.pose.position.y, pose_stamped.pose.pose.position.z, pose_stamped.pose.pose.orientation.x, pose_stamped.pose.pose.orientation.y, pose_stamped.pose.pose.orientation.z, pose_stamped.pose.pose.orientation.w);
         pose_pub.publish(pose_stamped);
+        
+        transformOdomToMap(pose_stamped);
 
     } else if(mode == Mode::HIGHEST_WEIGHT) {
         // ROS_INFO("HIGHEST_WEIGHT");
@@ -171,6 +173,7 @@ void getPose(const geometry_msgs::PoseArray::ConstPtr &pose_array, std::vector<d
         pose_stamped.pose.pose = pose_array->poses[highest_weight_index];
         pose_pub.publish(pose_stamped);
 
+        transformOdomToMap(pose_stamped);
 
         // tmp
         sensor_msgs::LaserScan simulated_scan;
