@@ -198,3 +198,5 @@ Es wird angenommen, dass es gleich wahrscheinlich ist, dass sich nach rechts ode
 Multipliziere jeden Eintrag, auf welchem eine Landmarke steht mit 0.3 und jeden Eintrag auf welchem keine Landmarke steht mit 0.75. Danach wird der Vektor normalisiert, sodass alle Wahrscheinlichkeiten addiert 1 ergeben:  
 ```[0.0241, 0.1002, 0.0745, 0.0184, 0.0888, 0.0184, 0.0745, 0.1002, 0.0241, 0.1002, 0.0745, 0.046, 0.0355, 0.046, 0.0745, 0.1002]^T```  
 Der Roboter steht mit Wahrscheinlichkeit 0.1002 auf Feld: [2, 8, 10, 16]
+
+

@@ -14,6 +14,10 @@ ros::Publisher pose_pub;
 geometry_msgs::PoseWithCovarianceStamped last_pose;
 geometry_msgs::PoseArray pose_array;
 
+double std_deviation_dist;
+double std_deviation_rot;
+int num_particles;
+
 struct Pose2D {
     float x;
     float y;
@@ -190,7 +194,8 @@ void ekfCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose)
 }
 
 void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose) {
-    ROS_INFO_STREAM("Pose: " << pose->pose.pose.position.x << ", " << pose->pose.pose.position.y << ", " << pose->pose.pose.position.z);
+    ROS_INFO_STREAM("Coordinates: " << pose->pose.pose.position.x << ", " << pose->pose.pose.position.y << ", " << pose->pose.pose.position.z);
+    ROS_INFO_STREAM("Orientation: " << pose->pose.pose.orientation.x << ", " << pose->pose.pose.orientation.y << ", " << pose->pose.pose.orientation.z << ", " << pose->pose.pose.orientation.w);
 
     pose_array = geometry_msgs::PoseArray();
 
@@ -202,8 +207,8 @@ void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose
     // get random poses around the current pose with a sigma of 0.5
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::normal_distribution<double> dist(0, 1.3);
-    std::normal_distribution<double> rot(0, 0.2);
+    std::normal_distribution<double> dist(0, std_deviation_dist);
+    std::normal_distribution<double> rot(0, std_deviation_rot);
 
     for (int i = 0; i < 800; i++) {
         geometry_msgs::Pose pose_random;
@@ -231,9 +236,15 @@ void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose
 
 int main(int argc, char **argv) {
 
-    ros::init(argc, argv, "mcl2");
+    ros::init(argc, argv, "mcl_a3");
 
     ros::NodeHandle nh;
+    ros::NodeHandle nh_p("~");
+
+    // Parameters
+    std_deviation_dist = nh_p.param<double>("std_deviation_dist", 1.3);
+    std_deviation_rot = nh_p.param<double>("std_deviation_rot", 0.2);
+    num_particles = nh_p.param<int>("num_particles", 800);
     
     // publisher
     pose_pub = nh.advertise<geometry_msgs::PoseArray>("/mcl/poses", 1000);

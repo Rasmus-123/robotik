@@ -43,6 +43,10 @@ ros::Subscriber map_sub;
 geometry_msgs::PoseWithCovarianceStamped last_pose;
 geometry_msgs::PoseArray pose_array;
 
+double sigma_weight;
+double std_deviation_dist;
+double std_deviation_rot;
+int num_particles;
 
 // Parameter for getPose
 enum Mode {
@@ -202,13 +206,11 @@ void motionUpdate(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose
 }
 
 /**
- * 
  * Transform base->map
- *  Auch einfach die Pose?
+ *  That's the Pose, as the transform describes the positioning of base_link(the robot) inside the map
  * Transform odom->base
- *  Ist gegeben
- * Transform odom->map = odom->base * base->map; 
- *  (oder andersherum?)
+ *  Transform is given by ekf
+ * Transform odom->map = base->map * odom->base;
  */
 void publishOdomMapTransform(const geometry_msgs::Pose& pose)
 {
@@ -226,6 +228,7 @@ void publishOdomMapTransform(const geometry_msgs::Pose& pose)
     {
         try
         {
+            // target = base_link, source = odom_combined
             tf_odom_base = tfBuffer.lookupTransform("base_link", "odom_combined", ros::Time(0));
             break;
         }
@@ -313,7 +316,6 @@ geometry_msgs::PoseWithCovarianceStamped getPose(std::vector<double> particle_we
         geometry_msgs::PoseWithCovarianceStamped pose_stamped;
         pose_stamped.header.stamp = ros::Time::now();
         pose_stamped.header.frame_id = "map";
-        ROS_INFO("Index: %d", highest_weight_index);
         pose_stamped.pose.pose = pose_array.poses[highest_weight_index];
         return pose_stamped;
     }
@@ -373,7 +375,7 @@ std::vector<double> weightParticlesWithSimulatedScans(const sensor_msgs::LaserSc
 
             // calculate weight for each scan point
             double dw = simulated_scan.ranges[j] - scan->ranges[j];
-            dw /= simulated_scan.ranges.size() * 1;
+            dw /= sigma_weight;
             dw = dw * dw;
             dw = std::exp(dw);
             sum += dw;
@@ -398,29 +400,27 @@ void realScanCallback(const sensor_msgs::LaserScan::ConstPtr &scan, const geomet
         return;
     }
     
-    // std::cout << "weight" << std::endl;
+    // Weighting
 
     std::vector<double> particle_weights = weightParticlesWithSimulatedScans(scan);
     
-    // std::cout << "norm" << std::endl;
     normalizeVector(particle_weights);
 
+    // Resampling
+
     if(!last_pose.header.frame_id.empty() && ( std::pow(last_pose.pose.pose.position.x - ekf_pose->pose.pose.position.x, 2) > 0.001 || std::pow(last_pose.pose.pose.position.y - ekf_pose->pose.pose.position.y, 2) > 0.001 || std::pow(last_pose.pose.pose.orientation.z - ekf_pose->pose.pose.orientation.z, 2) > 0.00001 )) {
-        // std::cout << "resmaple" << std::endl;
         resampleParticles(particle_weights);
     }
 
 
-    // std::cout << "getposes" << std::endl;
     // Get Pose from the weighted Particles using HIGHEST_WEIGHT or WEIGHTED_AVERAGE mode
     geometry_msgs::PoseWithCovarianceStamped pose = getPose(particle_weights, Mode::WEIGHTED_AVERAGE);
     
-    // std::cout << "pub" << std::endl;
     // Publish
     pose_pub.publish(pose);
     publishOdomMapTransform(pose.pose.pose);
 
-    // std::cout << "motionup" << std::endl;    
+    // Motion Updates
     motionUpdate(ekf_pose);
 
     last_pose = *ekf_pose;
@@ -445,10 +445,10 @@ void poseCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose
     // get random poses around the current pose with a sigma of 0.5
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::normal_distribution<double> dist(0, 1.3);
-    std::normal_distribution<double> rot(0, 0.2);
+    std::normal_distribution<double> dist(0, std_deviation_dist);
+    std::normal_distribution<double> rot(0, std_deviation_rot);
 
-    for (int i = 0; i < 2000; i++) {
+    for (int i = 0; i < num_particles; i++) {
         geometry_msgs::Pose pose_random;
         pose_random.position.x = pose->pose.pose.position.x + dist(gen);
         pose_random.position.y = pose->pose.pose.position.y + dist(gen);
@@ -483,14 +483,16 @@ void mapCallback(const nav_msgs::OccupancyGrid::ConstPtr &map) {
 
 int main(int argc, char **argv) {
 
-    ros::init(argc, argv, "mcl_combined");
+    ros::init(argc, argv, "mcl");
 
     ros::NodeHandle nh;
+    ros::NodeHandle nh_p("~");
 
     // Parameters
-    //double sigma_weight;
-    //nh.param<double>("sigma_weight", sigma_weight, 0.4);
-
+    sigma_weight = nh_p.param<double>("sigma_weight", 270.0);
+    std_deviation_dist = nh_p.param<double>("std_deviation_dist", 1.3);
+    std_deviation_rot = nh_p.param<double>("std_deviation_rot", 0.2);
+    num_particles = nh_p.param<int>("num_particles", 800);
     
     // subscriber
     // The map topic does not really publish data like most other topics. When first accessed it publishes the map one time
@@ -498,8 +500,8 @@ int main(int argc, char **argv) {
 
     ros::Subscriber sub = nh.subscribe("/initialpose", 1000, &poseCallback);
 
-    message_filters::Subscriber<sensor_msgs::LaserScan> scan_sub(nh, "/scan", 50);
-    message_filters::Subscriber<geometry_msgs::PoseWithCovarianceStamped> ekf_sub(nh, "/robot_pose_ekf/odom_combined", 50);
+    message_filters::Subscriber<sensor_msgs::LaserScan> scan_sub(nh, "/scan", 5000);
+    message_filters::Subscriber<geometry_msgs::PoseWithCovarianceStamped> ekf_sub(nh, "/robot_pose_ekf/odom_combined", 5000);
 
     typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::LaserScan, geometry_msgs::PoseWithCovarianceStamped> MySyncPolicy;
     message_filters::Synchronizer<MySyncPolicy> sync(MySyncPolicy(1000), scan_sub, ekf_sub);
