@@ -13,9 +13,12 @@
 #include <sensor_msgs/LaserScan.h>
 
 #include <tf2_ros/transform_listener.h>
+#include <tf2_ros/transform_broadcaster.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+#include <geometry_msgs/TransformStamped.h>
 
 #include <mcl_helper/scan_simulator.h>
+
 
 using namespace mcl_helper;
 ScanSimulator scan_sim;
@@ -52,6 +55,65 @@ enum Mode {
     WEIGHTED_AVERAGE,
     HIGHEST_WEIGHT,
 };
+
+/**
+ * 
+ * Transform base->map
+ *  Auch einfach die Pose?
+ * Transform odom->base
+ *  Ist gegeben
+ * Transform odom->map = odom->base * base->map; 
+ *  (oder andersherum?)
+ */
+void transformOdomToMap(const geometry_msgs::PoseConstPtr& pose)
+{
+    static tf2_ros::TransformBroadcaster tf_br;
+    tf2_ros::Buffer tfBuffer;
+    tf2_ros::TransformListener tf_listen(tfBuffer);
+
+    geometry_msgs::TransformStamped tf_odom_base;
+
+    while (ros::ok())
+    {
+        try
+        {
+            tf_odom_base = tfBuffer.lookupTransform("base_link", "odom", ros::Time(0));
+            break;
+        }
+        catch(const std::exception& e)
+        {
+            ROS_WARN("%s", e.what());
+            ros::Duration(1.0).sleep();
+        }
+    }
+
+    geometry_msgs::TransformStamped tf_base_map;
+    tf_base_map.child_frame_id = "base_link"; // Source Frame: "base_link"
+    tf_base_map.header.frame_id = "map"; // Target Frame: "map"
+    tf_base_map.header.stamp = ros::Time::now();
+
+    tf_base_map.transform.rotation = pose->orientation;
+    tf_base_map.transform.translation.x = pose->position.x;
+    tf_base_map.transform.translation.y = pose->position.y;
+    tf_base_map.transform.translation.z = pose->position.z;
+
+    tf2::Stamped<tf2::Transform> tf2_odom_base;
+    tf2::fromMsg(tf_odom_base, tf2_odom_base);
+    tf2::Stamped<tf2::Transform> tf2_base_map;
+    tf2::fromMsg(tf_base_map, tf2_base_map);
+
+    tf2::Transform tf2_odom_map = tf2_odom_base * tf2_odom_map;
+
+    geometry_msgs::Transform tf_odom_map = tf2::toMsg(tf2_odom_map);
+
+    geometry_msgs::TransformStamped tfs_msg;
+    tfs_msg.child_frame_id = "odom"; // Source Frame: "odom"
+    tfs_msg.header.frame_id = "map"; // Target Frame: "map"
+    tfs_msg.header.stamp = ros::Time::now();
+    tfs_msg.transform = tf_odom_map;
+    
+    tf_br.sendTransform(tfs_msg);
+}
 
 void getPose(const geometry_msgs::PoseArray::ConstPtr &pose_array, std::vector<double> particle_weights, Mode mode) {
 
