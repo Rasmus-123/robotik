@@ -139,9 +139,6 @@ M_{4G} = \begin{bmatrix}
 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 \\
 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0
 \end{bmatrix}
-
-\newline
-
 $$
 
 ## A)
@@ -294,6 +291,8 @@ Der Roboter steht mit Wahrscheinlichkeit 0.2444 auf Feld: [10]
 Da er 6 Schritte im Uhrzeigersinn gefahren ist, ist das wahrscheinlichste Startfeld: [4]
 
 ## B)
+
+Im folgenden werden die nicht-normalisierten Vektoren der Einfachheit halber ausgelassen.
 
 ### Initialisierung
 
