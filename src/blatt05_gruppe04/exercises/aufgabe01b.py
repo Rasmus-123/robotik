@@ -43,6 +43,7 @@ def move_uncertain(array, steps):
 def normalize(array):
     """Normalisieren eines Zahlenarrays"""
     eta = 1 / sum(array)
+    print("Eta:", eta)
     return [i * eta for i in array]
 
 
