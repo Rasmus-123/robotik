@@ -37,8 +37,7 @@ void convert(const geometry_msgs::Pose& from, Pose2D& to)
     to.alpha = get_yaw(from.orientation);
 }
 
-void convert(   const geometry_msgs::Pose& from,
-                Eigen::Affine3d& to)
+void convert(const geometry_msgs::Pose& from, Eigen::Affine3d& to)
 {
     Eigen::Vector3d translation;
     translation.x() = from.position.x;
@@ -84,9 +83,7 @@ geometry_msgs::Pose delta_pose(const geometry_msgs::Pose& p1, const geometry_msg
     return delta_p;
 }
 
-Pose2D apply_delta(
-    const Pose2D& pose, 
-    const Pose2D& delta)
+Pose2D apply_delta(const Pose2D& pose, const Pose2D& delta)
 {
     Pose2D pose_new;
 
@@ -97,30 +94,91 @@ Pose2D apply_delta(
     return pose_new;
 }
 
+/**
+ * Return weighted random Index of a NORMALIZED Vector of Weights
+ * 
+ * ---
+ * 
+ * Random in Range
+ * 
+ * Get Index from the subrange the random falls into
+ */
+int randomIndex(const std::vector<double>& weights)
+{
+    double random = (double)rand() / (double)RAND_MAX;
+    double sum = 0.0;
+
+    for (int i = 0; i < weights.size(); i++)
+    {
+        sum += weights[i];
+
+        if (sum > random)
+        {
+            return i;
+        }
+    }
+
+    ROS_ERROR("KEIN RANDOM");
+    return 0;
+    
+}
+
+void normalizeVector(std::vector<double>& weights)
+{
+    double sum = std::accumulate(weights.begin(), weights.end(), 0.0);
+
+    for (double& d : weights)
+    {
+        d = d / sum;
+    }
+}
+
 void ekfCallback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr &pose) {
 
     if(!last_pose.header.frame_id.empty() && !pose_array.header.frame_id.empty()) {
 
-            Pose2D current_ekf_2d;
-            convert(pose->pose.pose, current_ekf_2d);
-            
-            geometry_msgs::Pose current_ekf = pose->pose.pose;
-            geometry_msgs::Pose delta_ekf = delta_pose(last_pose.pose.pose, current_ekf);
+        // Resampling //
+        
+        // Imaginary Scan... All same weight...
+        // Set Vector with same Weight
+        std::vector<double> weights;
+        weights.resize(pose_array.poses.size());
+        weights.assign(weights.size(), 1.0 / weights.size());
 
-            Pose2D delta_ekf_2d;
-            convert(delta_ekf, delta_ekf_2d);
-            
-            for(size_t i=0; i < pose_array.poses.size(); i++)
-            {
-                Pose2D old_pose;
-                old_pose.x = pose_array.poses[i].position.x;
-                old_pose.y = pose_array.poses[i].position.y;
-                old_pose.alpha = get_yaw(pose_array.poses[i].orientation);
-                Pose2D new_pose = apply_delta(old_pose, delta_ekf_2d);
-                pose_array.poses[i].position.x = new_pose.x;
-                pose_array.poses[i].position.y = new_pose.y;
-                pose_array.poses[i].orientation = tf2::toMsg(tf2::Quaternion(tf2::Vector3(0,0,1), new_pose.alpha));
-            }
+        normalizeVector(weights); // Hier egal
+
+        // 
+        geometry_msgs::PoseArray new_pose_array;
+        std::vector<double> new_weights;
+        for(int i = 0; i < pose_array.poses.size(); i++) {
+            int index = randomIndex(weights);
+            new_pose_array.poses.push_back(pose_array.poses[index]);
+            new_weights.push_back(weights[index]);
+        }
+        pose_array.poses = new_pose_array.poses;
+        weights = new_weights;
+        normalizeVector(weights); // Hier egal
+
+        Pose2D current_ekf_2d;
+        convert(pose->pose.pose, current_ekf_2d);
+        
+        geometry_msgs::Pose current_ekf = pose->pose.pose;
+        geometry_msgs::Pose delta_ekf = delta_pose(last_pose.pose.pose, current_ekf);
+
+        Pose2D delta_ekf_2d;
+        convert(delta_ekf, delta_ekf_2d);
+        
+        for(size_t i=0; i < pose_array.poses.size(); i++)
+        {
+            Pose2D old_pose;
+            old_pose.x = pose_array.poses[i].position.x;
+            old_pose.y = pose_array.poses[i].position.y;
+            old_pose.alpha = get_yaw(pose_array.poses[i].orientation);
+            Pose2D new_pose = apply_delta(old_pose, delta_ekf_2d);
+            pose_array.poses[i].position.x = new_pose.x;
+            pose_array.poses[i].position.y = new_pose.y;
+            pose_array.poses[i].orientation = tf2::toMsg(tf2::Quaternion(tf2::Vector3(0,0,1), new_pose.alpha));
+        }
 
         pose_array.header.stamp = pose->header.stamp;
 
