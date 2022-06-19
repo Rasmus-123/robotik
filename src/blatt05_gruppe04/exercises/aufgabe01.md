@@ -200,7 +200,7 @@ $$
 Danach wird der Vektor normalisiert, sodass alle Wahrscheinlichkeiten addiert 1 ergeben. Der Normalisierungsfaktor lässt sich bestimmen, durch 1/SummeDerWahrscheinlichkeiten. Hier wäre dieser also $1/0.390625$. Dann multipliziert man jeden Eintrag mit dem Normalisierungsfaktor um die Wahrscheinlichkeiten zu normalisieren. 
 
 $$
-\eta = 1 / \left| \overline{V_{t1}} \right| =  1/0.390625
+\eta = 1 / \left| \overline{V_{t1}} \right| = 1/0.390625 = 2.56
 
 \newline
 
@@ -249,7 +249,7 @@ $$
 Danach wird der Vektor normalisiert, sodass alle Wahrscheinlichkeiten addiert 1 ergeben:  
 
 $$
-\eta = 1 / \left| \overline{V_{t3}} \right|
+\eta = 1 / \left| \overline{V_{t3}} \right| = 2.69
 \newline
 V_{t3} = \eta \cdot \overline{V_{t3}} =
 [0.0752, 0.0269, 0.0752, 0.0752, 0.0269, 0.2105, 0.0269, 0.0752, 0.0752, 0.0269, 0.0752, 0.0269, 0.0752, 0.0269, 0.0752, 0.0269]^T
@@ -282,7 +282,7 @@ $$
 Danach wird der Vektor normalisiert, sodass alle Wahrscheinlichkeiten addiert 1 ergeben:  
 
 $$
-\eta = 1 / \left| \overline{V_{t5}} \right|
+\eta = 1 / \left| \overline{V_{t5}} \right| = 1.55
 \newline
 V_{t5} = \eta \cdot \overline{V_{t5}} =
 [0.0349, 0.0312, 0.0873, 0.0125, 0.0873, 0.0125, 0.0873, 0.0873, 0.0125, 0.2444, 0.0312, 0.0873, 0.0349, 0.0312, 0.0873, 0.0312]^T
@@ -314,7 +314,7 @@ Multipliziere jeden Eintrag, auf welchem eine Landmarke steht mit 0.7 und jeden 
 $$
 \overline{V_{t1}} = M_{L} \cdot V_{t0}
 \newline
-\eta = 1 / \left| \overline{V_{t1}} \right|
+\eta = 1 / \left| \overline{V_{t1}} \right| = 2.56
 \newline
 V_{t1} = \eta \cdot \overline{V_{t1}} =
 [0.112, 0.04, 0.04, 0.112, 0.04, 0.112, 0.04, 0.04, 0.112, 0.04, 0.04, 0.04, 0.112, 0.04, 0.04, 0.04]^T
@@ -350,7 +350,7 @@ Multipliziere jeden Eintrag, auf welchem eine Landmarke steht mit 0.7 und jeden 
 $$
 \overline{V_{t3}} = M_{L} \cdot V_{t2}
 \newline
-\eta = 1 / \left| \overline{V_{t3}} \right|
+\eta = 1 / \left| \overline{V_{t3}} \right| = 2.69
 \newline
 V_{t3} = \eta \cdot \overline{V_{t3}} =
 [0.0752, 0.051, 0.051, 0.1429, 0.0269, 0.1429, 0.051, 0.051, 0.0752, 0.0269, 0.0752, 0.0269, 0.0752, 0.0269, 0.0752, 0.0269]^T
@@ -364,7 +364,6 @@ Um zu modellieren, dass der Roboter in beide Richtungen gefahren sein könnte, w
 
 $$
 V_{t4U} =  M_{4U} \cdot V_{t3}=
-\newline
 [0.0752, 0.0269, 0.0752, 0.0269, 0.0752, 0.051, 0.051, 0.1429, 0.0269, 0.1429, 0.051, 0.051, 0.0752, 0.0269, 0.0752, 0.0269]^T
 \newline
 V_{t4G} =  M_{4G} \cdot V_{t3}=
@@ -390,7 +389,7 @@ Multipliziere jeden Eintrag, auf welchem eine Landmarke steht mit 0.3 und jeden 
 $$
 \overline{V_{t5}} = M_{KL} \cdot V_{t4}
 \newline
-\eta = 1 / \left| \overline{V_{t5}} \right|
+\eta = 1 / \left| \overline{V_{t5}} \right| = 1.57
 \newline
 V_{t5} = \eta \cdot \overline{V_{t5}} =
 [0.0241, 0.1002, 0.0745, 0.0184, 0.0888, 0.0184, 0.0745, 0.1002, 0.0241, 0.1002, 0.0745, 0.046, 0.0355, 0.046, 0.0745, 0.1002]^T
