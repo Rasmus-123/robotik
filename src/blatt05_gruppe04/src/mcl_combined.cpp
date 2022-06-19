@@ -68,8 +68,12 @@ enum Mode {
 void transformOdomToMap(const geometry_msgs::PoseConstPtr& pose)
 {
     static tf2_ros::TransformBroadcaster tf_br;
+
+
+    // Get odom -> base_link Transform //
+
     tf2_ros::Buffer tfBuffer;
-    tf2_ros::TransformListener tf_listen(tfBuffer);
+    tf2_ros::TransformListener tfListen(tfBuffer); // Was macht der eigentlich?
 
     geometry_msgs::TransformStamped tf_odom_base;
 
@@ -87,6 +91,8 @@ void transformOdomToMap(const geometry_msgs::PoseConstPtr& pose)
         }
     }
 
+    // Set base_link -> map Transform using Pose estimate // 
+
     geometry_msgs::TransformStamped tf_base_map;
     tf_base_map.child_frame_id = "base_link"; // Source Frame: "base_link"
     tf_base_map.header.frame_id = "map"; // Target Frame: "map"
@@ -97,12 +103,18 @@ void transformOdomToMap(const geometry_msgs::PoseConstPtr& pose)
     tf_base_map.transform.translation.y = pose->position.y;
     tf_base_map.transform.translation.z = pose->position.z;
 
+    // Convert to tf2::Transforms //
+
     tf2::Stamped<tf2::Transform> tf2_odom_base;
     tf2::fromMsg(tf_odom_base, tf2_odom_base);
     tf2::Stamped<tf2::Transform> tf2_base_map;
     tf2::fromMsg(tf_base_map, tf2_base_map);
 
+    // Combine Transforms using Multiplication //
+
     tf2::Transform tf2_odom_map = tf2_odom_base * tf2_odom_map;
+
+    // Set Message and Broadcast //
 
     geometry_msgs::Transform tf_odom_map = tf2::toMsg(tf2_odom_map);
 
