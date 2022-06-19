@@ -11,3 +11,4 @@ src/uos_tools
 src/volksbot_driver
 src/robot_pose_ekf
 .zsh
+src/mcl_helper
