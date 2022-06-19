@@ -65,7 +65,7 @@ enum Mode {
  * Transform odom->map = odom->base * base->map; 
  *  (oder andersherum?)
  */
-void transformOdomToMap(const geometry_msgs::PoseConstPtr& pose)
+void transformOdomToMap(const geometry_msgs::Pose& pose)
 {
     static tf2_ros::TransformBroadcaster tf_br;
 
@@ -98,10 +98,10 @@ void transformOdomToMap(const geometry_msgs::PoseConstPtr& pose)
     tf_base_map.header.frame_id = "map"; // Target Frame: "map"
     tf_base_map.header.stamp = ros::Time::now();
 
-    tf_base_map.transform.rotation = pose->orientation;
-    tf_base_map.transform.translation.x = pose->position.x;
-    tf_base_map.transform.translation.y = pose->position.y;
-    tf_base_map.transform.translation.z = pose->position.z;
+    tf_base_map.transform.rotation = pose.orientation;
+    tf_base_map.transform.translation.x = pose.position.x;
+    tf_base_map.transform.translation.y = pose.position.y;
+    tf_base_map.transform.translation.z = pose.position.z;
 
     // Convert to tf2::Transforms //
 
@@ -163,7 +163,7 @@ void getPose(const geometry_msgs::PoseArray::ConstPtr &pose_array, std::vector<d
         // ROS_INFO("pose_stamped: x: %f y: %f z: %f x: %f y: %f z: %f w: %f", pose_stamped.pose.pose.position.x, pose_stamped.pose.pose.position.y, pose_stamped.pose.pose.position.z, pose_stamped.pose.pose.orientation.x, pose_stamped.pose.pose.orientation.y, pose_stamped.pose.pose.orientation.z, pose_stamped.pose.pose.orientation.w);
         pose_pub.publish(pose_stamped);
         
-        transformOdomToMap(pose_stamped);
+        transformOdomToMap(pose_stamped.pose.pose);
 
     } else if(mode == Mode::HIGHEST_WEIGHT) {
         // ROS_INFO("HIGHEST_WEIGHT");
@@ -173,7 +173,7 @@ void getPose(const geometry_msgs::PoseArray::ConstPtr &pose_array, std::vector<d
         pose_stamped.pose.pose = pose_array->poses[highest_weight_index];
         pose_pub.publish(pose_stamped);
 
-        transformOdomToMap(pose_stamped);
+        transformOdomToMap(pose_stamped.pose.pose);
 
         // tmp
         sensor_msgs::LaserScan simulated_scan;
