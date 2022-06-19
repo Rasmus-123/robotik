@@ -207,17 +207,11 @@ include_directories(
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 
-add_executable(mcl1 src/mcl1.cpp)
-target_link_libraries(mcl1 ${catkin_LIBRARIES})
-
-add_executable(mcl2 src/mcl2.cpp)
-target_link_libraries(mcl2 ${catkin_LIBRARIES})
-
-add_executable(scan_simulator_testA src/scan_simulator_testA.cpp)
-target_link_libraries(scan_simulator_testA ${catkin_LIBRARIES})
+add_executable(mcl_a3 src/mcl_a3.cpp)
+target_link_libraries(mcl_a3 ${catkin_LIBRARIES})
 
 add_executable(scan_simulator_test src/scan_simulator_test.cpp)
 target_link_libraries(scan_simulator_test ${catkin_LIBRARIES})
 
-add_executable(mcl_combined src/mcl_combined.cpp)
-target_link_libraries(mcl_combined ${catkin_LIBRARIES})
+add_executable(mcl src/mcl.cpp)
+target_link_libraries(mcl ${catkin_LIBRARIES})
