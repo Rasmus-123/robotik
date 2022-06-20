@@ -1,15 +1,19 @@
 Aufgabe 2
 
-a)  Bei der Lokalisierung entsteht das Problem, dass viele verschiedene Positionen des Roboters berücksichtigt werden müssen. Das bedeutet, dass das sehr aufwendig ist. Dabei wird eine Menge von "relevanten" Positionen aus der Menge aller Positionen entnommen, auf welchen dann nun die Berechnungen stattfinden.
+a)  Bei der Lokalisierung entsteht das Problem, dass viele verschiedene Positionen des Roboters berücksichtigt werden müssen. Das bedeutet, dass dies sehr aufwendig ist. Dabei wird eine Menge von "relevanten" Positionen aus der Menge aller Positionen entnommen, auf welchen dann die Berechnungen stattfinden.
     1. Dieser startet damit, dass (wenn keine Anfangspose gegeben ist) jede Position des Roboters gleich wahrscheinlich ist. Anhand dieser Wahrscheinlichkeiten werden dann nun einige Menge an Partikeln gestreut.
-    2. Findet danach eine Sensormessung statt, so können anhand dieser nun die Wahrscheinlichkeiten der Partikel angepasst werden, was bedeutet, dass es sich danach (vermutlich) nicht mehr um eine Gleichverteilung handelt.
-    3. Danach findet dann das Resampling statt, bei welchem zufällig, nach den gegebenen Gewichten der Partikel, diese erneut nach diesen randomisiert gestreut werden. Dabei wird dann allen Partikeln das gleiche Gewicht zugewiesen.
+    2. Findet danach eine Sensormessung statt, so können anhand dieser nun die Wahrscheinlichkeiten der Partikel angepasst werden, was bedeutet, dass es sich danach (vermutlich) nicht mehr um eine Gleichverteilung handelt und wahrscheinlichere Partikel stärker gewichtet werden.
+    3. Danach findet dann das Resampling statt, bei welchem zufällig, nach den gegebenen Gewichten der Partikel, aus der Menge der aktuellen Partikel n-viele Partikel gezogen werden, welche dann die neue Partikelmenge stellen.
     4. Danach findet dann eine Aktion des Roboters statt, welche in die Partikelmenge integriert wird. Danach findet dann eine erneute Sensormessung statt und der Algorithmus wird von Schritt 2 aus erneut durchlaufen.
 
-b)  Dies findet statt, damit wenig Positionen weiter betrachtet werden, welche unwahrscheinlich sind.
+b)  Dies findet statt, damit wenig Partikel weiter betrachtet werden, welche unwahrscheinlich sind (geringeres Gewicht) und die wahrscheinlicheren Partikel (höheres Gewicht) in den darauf folgenden Schritten stärker betrachtet werden.
+    Im besten Fall entsteht dadurch eine gewisse Art von Konvergenz, sodass alle Partikel aufeinander bzw. nah beieinander liegen und sich dadurch eine Posenschätzung abgeben lässt.
 
-c)  Konstant. TODO
+c)  Standardmäßig ist die Anzahl der Partikel konstant. Dabei kann man im Vorhinein durch gute Abschätzungen oder andere Verfahren eine Anzahl festlegen, welche für die gegebene Situation notwendig ist. Die Anzahl hängt z. B. davon ab, ob es nur einen kleinen Bereich an relevanten Positionen gibt, ob und wenn wie viele Landmarken zur Verfügung stehen oder ob eine Poseschätzung zu Anfang gegeben ist.
+    Ebenso gibt es aber auch Ansätze, bei denen die Partikelanzahl variabel zur Laufzeit angepasst wird, wie z. B. das KLD-Resampling.
+    Somit kommt es auf die gewünschte Implementierung an, ob die Anzahl der Partikel konstant oder variabel ist.
 
-d)  Hat man solch eine Karte vorliegen, so lässt sich diese zuerst mit z. B. einem simulierten Laserscan in dieser Karte diese in den Messraum umwandeln. Dieser lässt sich dann nutzen, um die Gewichte der Partikel anzupassen. Ist ein Messwert in den Messdaten, aber nicht in der Karte enthalten, so lässt sich mit dieser Information das Gewicht von diesem Messwert verringern.
+d)  Hat man solch eine Karte vorliegen, so lassen sich auch in dieser simulierte Laserscans durchführen, mit welchen man die Karte in den Messraum umwandelt.
+    Diese lässt sich dann nutzen, um die Gewichte der Partikel anzupassen. Stimmt der simulierte Laserscan eines Partikels gut mit dem gemessenen Laserscan überein, so kann man diesem Partikel ein hohes Gewicht zuweisen.
 
-e)  Man könnte aus diesen ggf. Keypoints entnehmen oder andere Informationen, die man mit dem Scan matchen kann und damit dann die Gewichte anpassen.
+e)  Man könnte aus diesen ggf. Keypoints entnehmen oder andere Informationen. Anhand dieser könnte man nun Partikel, welche ebenfalls diese Keypoints aufweisen höher gewichten.
