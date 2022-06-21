@@ -3,10 +3,10 @@ Aufgabe 2
 a)  Bei der Lokalisierung entsteht das Problem, dass viele verschiedene Positionen des Roboters berücksichtigt werden müssen. Das bedeutet, dass dies sehr aufwendig ist. Dabei wird eine Menge von "relevanten" Positionen aus der Menge aller Positionen entnommen, auf welchen dann die Berechnungen stattfinden.
     1. Dieser startet damit, dass (wenn keine Anfangspose gegeben ist) jede Position des Roboters gleich wahrscheinlich ist. Anhand dieser Wahrscheinlichkeiten werden dann nun einige Menge an Partikeln gestreut.
     2. Findet danach eine Sensormessung statt, so können anhand dieser nun die Wahrscheinlichkeiten der Partikel angepasst werden, was bedeutet, dass es sich danach (vermutlich) nicht mehr um eine Gleichverteilung handelt und wahrscheinlichere Partikel stärker gewichtet werden.
-    3. Danach findet dann das Resampling statt, bei welchem zufällig, nach den gegebenen Gewichten der Partikel, aus der Menge der aktuellen Partikel n-viele Partikel gezogen werden, welche dann die neue Partikelmenge stellen.
+    3. Danach findet dann das Resampling statt, bei welchem zufällig, nach den gegebenen Gewichten der Partikel, aus der Menge der aktuellen Partikel n-viele Partikel gezogen werden (dabei sind auch Duplikate möglich), welche dann die neue Partikelmenge stellen.
     4. Danach findet dann eine Aktion des Roboters statt, welche in die Partikelmenge integriert wird. Danach findet dann eine erneute Sensormessung statt und der Algorithmus wird von Schritt 2 aus erneut durchlaufen.
 
-b)  Dies findet statt, damit wenig Partikel weiter betrachtet werden, welche unwahrscheinlich sind (geringeres Gewicht) und die wahrscheinlicheren Partikel (höheres Gewicht) in den darauf folgenden Schritten stärker betrachtet werden.
+b)  Dies findet statt, damit weniger unwahrscheinliche (geringeres Gewicht) Partikel weiter betrachtet werden und die wahrscheinlicheren Partikel (höheres Gewicht) in den darauf folgenden Schritten stärker betrachtet werden.
     Im besten Fall entsteht dadurch eine gewisse Art von Konvergenz, sodass alle Partikel aufeinander bzw. nah beieinander liegen und sich dadurch eine Posenschätzung abgeben lässt.
 
 c)  Standardmäßig ist die Anzahl der Partikel konstant. Dabei kann man im Vorhinein durch gute Abschätzungen oder andere Verfahren eine Anzahl festlegen, welche für die gegebene Situation notwendig ist. Die Anzahl hängt z. B. davon ab, ob es nur einen kleinen Bereich an relevanten Positionen gibt, ob und wenn wie viele Landmarken zur Verfügung stehen oder ob eine Poseschätzung zu Anfang gegeben ist.
