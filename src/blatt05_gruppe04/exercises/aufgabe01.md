@@ -23,11 +23,11 @@ M_{L}=\begin{bmatrix}
 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0.25 & 0 & 0 \\
 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0.25 & 0 \\
 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0.25
-\end{bmatrix}
+\end{bmatrix} $$
 
-\newline
+&nbsp;
 
-\text{Matrix: Keine Landmarke detektiert}
+$$ \text{Matrix: Keine Landmarke detektiert}
 \newline
 M_{KL}=\begin{bmatrix}
 0.3 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
@@ -46,11 +46,11 @@ M_{KL}=\begin{bmatrix}
 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0.75 & 0 & 0 \\
 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0.75 & 0 \\
 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0.75
-\end{bmatrix}
+\end{bmatrix} $$
 
-\newline
+&nbsp;
 
-\text{Matrix: 2 Schritte im Uhrzeigersinn}
+$$ \text{Matrix: 2 Schritte im Uhrzeigersinn}
 \newline
 M_{2U} = \begin{bmatrix}
 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
@@ -69,11 +69,11 @@ M_{2U} = \begin{bmatrix}
 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\
 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0
-\end{bmatrix}
+\end{bmatrix} $$
 
-\newline
+&nbsp;
 
-\text{Matrix: 4 Schritte im Uhrzeigersinn}
+$$ \text{Matrix: 4 Schritte im Uhrzeigersinn}
 \newline
 M_{4U} = \begin{bmatrix}
 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
@@ -92,11 +92,11 @@ M_{4U} = \begin{bmatrix}
 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0
-\end{bmatrix}
+\end{bmatrix} $$
 
-\newline
+&nbsp;
 
-\text{Matrix: 2 Schritte gegen den Uhrzeigersinn}
+$$ \text{Matrix: 2 Schritte gegen den Uhrzeigersinn}
 \newline
 M_{2G} = \begin{bmatrix}
 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 \\
@@ -115,11 +115,11 @@ M_{2G} = \begin{bmatrix}
 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 \\
 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 \\
 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0
-\end{bmatrix}
+\end{bmatrix} $$
 
-\newline
+&nbsp;
 
-\text{Matrix: 4 Schritte gegen den Uhrzeigersinn}
+$$ \text{Matrix: 4 Schritte gegen den Uhrzeigersinn}
 \newline
 M_{4G} = \begin{bmatrix}
 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 \\

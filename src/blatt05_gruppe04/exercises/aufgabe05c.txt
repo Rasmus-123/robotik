@@ -5,9 +5,9 @@ Gewichteter Mittelwert
         - Liegt eine Partikelmenge vor, welche ziemlich nah beieinander liegt, so ist der Mittelwert dieser eine gute und stabile Poseschätzung
 
     Nachteile:
-        - Häufig haben viele Partikel kein konstantes Gewicht und verändern sich regelmäßig. Wird nun immer der Mittelwert dieser genommen, so liegt in der Poseschätzung immer eine gewisse Art von "zittern" vor
+        - Häufig haben viele Partikel kein konstantes Gewicht und verändern sich regelmäßig. Wird nun immer der Mittelwert dieser genommen, so liegt in der Poseschätzung immer eine gewisse Art von "Zittern" vor
         - Nimmt man den Mittelwert von zwei (oder mehr) sehr wahrscheinlichen Partikeln, welche aber weit auseinander liegen, so erhält man eine Poseschätzung, welche zwar das Mittel dieser ist, aber selbst keine wahrscheinliche Pose ist
-        - Der Mittelwert von einigen validen Positionen, könnte selbst eine invalide (also z. B. in der Wand liegende) Position sein
+        - Der Mittelwert von einigen validen Posen, könnte selbst eine invalide (also z. B. in der Wand liegende) Pose sein
 
 
 Partikel mit bestem Gewicht:
@@ -15,5 +15,5 @@ Partikel mit bestem Gewicht:
         - Das Partikel mit dem höchsten Gewicht ändert sich meist nicht all zu häufig, was dazu führt, dass im Allgemeinen eine stabile Poseschätzung vorliegt
 
     Nachteile:
+        - Liegen mehrere Partikel mit einem ähnlichem Gewicht vor, kann es dazu kommen, dass in aufeinanderfolgenden Scans immer wieder andere Partikel das maximale Gewicht haben. Dies können dabei auch Partikel sein, welche nicht nah beieinander liegen. Dies führt dann dazu, dass die Posenschätzung "springt"
         - Liegen mehrere Partikel mit einem starken Gewicht vor, so wird nur eins von diesen ausgewählt und die anderen mehr oder weniger ignoriert
-        - Liegt eine Partikelmenge vor, welche ziemlich nah beieinander liegt, so könnte es dazu kommen, dass all deren Gewichte ziemlich ähnlich sind und sich somit das Partikel mit dem höchsten Gewicht immer wieder verändert. Dadurch könnte dann eine gewisse Art von "zittern" entstehen
