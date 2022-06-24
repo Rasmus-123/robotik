@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+  
+    <node name="slam_gmapping_node" pkg="gmapping" type="slam_gmapping">
+       <!--  <remap from="image_input" to="/camera/rgb/image_rect_color"/>
+        <remap from="image_output" to="gauss_output"/> -->
+
+        <rosparam param="base_frame">base_footprint</rosparam>
+        <rosparam param="odom_frame">odom_combined</rosparam>
+    </node>
+    
+</launch>
